@@ -1,16 +1,78 @@
 ---
+import Base from "../layouts/Base.astro";
+
+const doors = [
+  {
+    index: "01",
+    href: "/story",
+    title: "My Story",
+    copy: "A short look at how I see things, without turning it into a biography.",
+  },
+  {
+    index: "02",
+    href: "/built",
+    title: "Things I've Built",
+    copy: "Work, and a few experiments that were just fun to make.",
+  },
+  {
+    index: "03",
+    href: "/explored",
+    title: "Things I've Explored",
+    copy: "New experiences, trails, and worlds worth getting lost in.",
+  },
+  {
+    index: "04",
+    href: "/notes",
+    title: "Notes",
+    copy: "A few thoughts, written only when something is worth sharing.",
+  },
+];
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Base
+  title="Prateek Alakh"
+  description="Curiosity takes me places. A short introduction to Prateek Alakh."
+>
+  <section class="hero">
+    <p class="eyebrow">Prateek Alakh</p>
+    <h1>
+      Curiosity takes<br />
+      me <em>places.</em>
+    </h1>
+    <div class="lede">
+      <p>
+        I enjoy understanding how things work, solving meaningful problems, and turning ideas into reality.
+      </p>
+      <p>
+        Whether I'm building technology, exploring an unfamiliar place, or learning something new, I like looking beyond the obvious, asking questions, and discovering what's possible.
+      </p>
+    </div>
+    <div class="hero-actions">
+      <a class="button" href="/story">My Story</a>
+      <a class="text-link" href="/contact">Get in touch</a>
+    </div>
+  </section>
+
+  <blockquote class="pull">
+    <p>The road not taken is something I want to explore.</p>
+  </blockquote>
+
+  <nav aria-label="Explore">
+    <ol class="doors">
+      {
+        doors.map((door) => (
+          <li>
+            <a href={door.href}>
+              <span>{door.index}</span>
+              <div>
+                <h2>{door.title}</h2>
+                <p>{door.copy}</p>
+              </div>
+              <em aria-hidden="true">↗</em>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </nav>
+</Base>

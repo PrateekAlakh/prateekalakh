@@ -1,0 +1,95 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+const pageTitle = title === "Prateek Alakh" ? title : `${title} — Prateek Alakh`;
+const year = new Date().getFullYear();
+const current = Astro.url.pathname.replace(/\/$/, "") || "/";
+
+const nav = [
+  { href: "/story", label: "My Story" },
+  { href: "/built", label: "Things I've Built" },
+  { href: "/explored", label: "Things I've Explored" },
+  { href: "/notes", label: "Notes" },
+  { href: "/contact", label: "Get in Touch" },
+];
+---
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#070706" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,560;1,9..144,460;1,9..144,560&family=Outfit:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>{pageTitle}</title>
+  </head>
+  <body>
+    <div class="atmosphere" aria-hidden="true">
+      <div class="orb orb-a"></div>
+      <div class="orb orb-b"></div>
+      <div class="grain"></div>
+    </div>
+    <div class="cursor-glow" aria-hidden="true"></div>
+
+    <header class="site-header">
+      <div class="wrap bar">
+        <a class="mark" href="/" aria-label="Prateek Alakh, home">
+          <span>PA</span>
+        </a>
+        <nav class="nav" aria-label="Site">
+          {
+            nav.map((item) => (
+              <a href={item.href} aria-current={current === item.href ? "page" : undefined}>
+                {item.label}
+              </a>
+            ))
+          }
+        </nav>
+        <p class="status"><span class="pulse" aria-hidden="true"></span>Always exploring</p>
+      </div>
+    </header>
+
+    <main>
+      <div class="wrap">
+        <slot />
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap bar">
+        <span>© {year} Prateek Alakh</span>
+        <span>A small window into a much bigger world.</span>
+      </div>
+    </footer>
+
+    <script>
+      const glow = document.querySelector<HTMLElement>(".cursor-glow");
+      const finePointer = window.matchMedia("(pointer: fine)").matches;
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      if (glow && finePointer && !reduceMotion) {
+        window.addEventListener(
+          "pointermove",
+          (event) => {
+            glow.style.transform = `translate3d(${event.clientX}px, ${event.clientY}px, 0)`;
+          },
+          { passive: true },
+        );
+      } else {
+        glow?.remove();
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,54 @@
+---
+import Base from "../layouts/Base.astro";
+
+const links = [
+  {
+    label: "GitHub",
+    href: "https://github.com/PrateekAlakh",
+    hint: "github.com/PrateekAlakh",
+  },
+  {
+    label: "Email",
+    href: "mailto:prateek.alakh@gmail.com",
+    hint: "prateek.alakh@gmail.com",
+  },
+];
+---
+
+<Base
+  title="Get in Touch"
+  description="Contact Prateek Alakh."
+>
+  <header class="page-hero">
+    <p class="eyebrow">Get in Touch</p>
+    <h1>Say hello.</h1>
+    <div class="lede">
+      <p>
+        Have an interesting idea, a question, or something worth exploring together? I'd be happy to hear from you.
+      </p>
+    </div>
+  </header>
+
+  <ul class="contact-list">
+    {
+      links.map((link) => (
+        <li>
+          <a
+            href={link.href}
+            target={link.href.startsWith("http") ? "_blank" : undefined}
+            rel={link.href.startsWith("http") ? "noreferrer" : undefined}
+          >
+            <strong>{link.label}</strong>
+            <small>{link.hint}</small>
+            <em aria-hidden="true">↗</em>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+
+  <a class="pager" href="/story">
+    <small>Or start here</small>
+    <span>My Story</span>
+  </a>
+</Base>

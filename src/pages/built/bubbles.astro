@@ -1,0 +1,123 @@
+---
+import Base from "../../layouts/Base.astro";
+---
+
+<Base
+  title="Pop Some Bubbles"
+  description="An interactive little experiment that lets bubbles take over your screen, without taking over your website."
+>
+  <header class="page-hero">
+    <p class="eyebrow"><a href="/built">Things I've Built</a></p>
+    <h1 class="wide-title">
+      Pop Some<br />
+      Bubbles
+    </h1>
+    <div class="lede">
+      <p>
+        An interactive little experiment that lets bubbles take over your screen, without taking over your website.
+      </p>
+    </div>
+    <div class="hero-actions">
+      <button class="button" type="button" id="launch-bubbles">Try it on this page</button>
+    </div>
+  </header>
+
+  <div class="chapters section">
+    <section>
+      <h2>The idea</h2>
+      <div class="prose">
+        <p>
+          Sometimes I come across an idea that doesn't necessarily solve a problem or make anything more productive. It just sounds fun to build.
+        </p>
+        <p>This was one of those ideas.</p>
+        <p>
+          I wanted to create something simple: a bunch of bubbles floating around a website that visitors could pop whenever they felt like it.
+        </p>
+        <p>
+          But there was one condition. I didn't want the bubbles to replace the website or open inside a separate game. I wanted the website to carry on as usual.
+        </p>
+        <p>
+          You could still read an article, scroll through a page, or follow a link. The bubbles would simply exist on top of everything, floating around until you decided to pop them.
+        </p>
+        <p>
+          And if a bubble happened to be covering something you wanted to click? Well, you'd have to pop it first. That little interaction was the part I found most interesting.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Making the illusion work</h2>
+      <div class="prose">
+        <p>
+          The idea sounds straightforward until you start thinking about how browsers handle interactions. A transparent overlay covering the entire screen would normally intercept clicks intended for the website underneath it. That would defeat the whole purpose.
+        </p>
+        <p>
+          The challenge was to make the bubbles feel like actual objects floating between the visitor and the page, without interfering with anything else.
+        </p>
+        <p>The solution separates the visual animation from the interactive surfaces.</p>
+        <p>
+          A canvas renders the bubbles and their movement, while individual circular hit targets handle clicks. The canvas itself doesn't intercept pointer events, so interactions outside the bubbles continue to reach the website normally.
+        </p>
+        <p>Click a bubble, and it pops. Click an empty space, and the website responds normally. Scroll the page, and the bubbles remain floating over it. Pop every bubble, and the website returns to its original appearance.</p>
+        <p>
+          There are no scores, timers, or objectives. You can pop the bubbles, ignore them, or end the experiment whenever you like.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Building something reusable</h2>
+      <div class="prose">
+        <p>I also wanted this to be more than a feature tied to my personal website.</p>
+        <p>
+          The experiment is built as a standalone JavaScript library using native browser APIs, without depending on Astro, React, or another frontend framework. A website only needs to load the library and provide a way to launch it.
+        </p>
+        <p>
+          The library handles the bubble animation, movement, hit detection, popping effects, and cleanup independently of the page underneath.
+        </p>
+        <p>
+          The first version includes bubbles of different sizes, gentle movement, viewport boundary bouncing, and a playful exit sequence that pops the remaining bubbles.
+        </p>
+        <p>
+          There are still things I'd like to explore, including more natural bubble interactions and richer physics. But I wanted to get the essential experience right before adding complexity.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2>What I enjoyed about it</h2>
+      <div class="prose">
+        <p>My favorite part wasn't drawing the bubbles or making them move.</p>
+        <p>
+          It was figuring out how to make something feel like it belonged to a webpage while remaining completely independent of that webpage.
+        </p>
+        <p>It's a small experiment in animation, geometry, browser events, and interaction design.</p>
+        <p>
+          And I like that it doesn't really need a practical purpose. Sometimes building something just because it makes you smile is a good enough reason.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Try it yourself</h2>
+      <div class="prose">
+        <p>Launch the experiment and watch a few bubbles float across the page.</p>
+        <p>Pop them, leave them alone, or clear them all at once.</p>
+        <p>The rest of the website isn't going anywhere.</p>
+        <p>JavaScript, HTML Canvas, browser APIs, and CSS. A personal experiment, and a small reusable browser library.</p>
+      </div>
+    </section>
+  </div>
+
+  <a class="pager" href="/built">
+    <small>Back</small>
+    <span>Things I've Built</span>
+  </a>
+
+  <script>
+    import { startBubbles } from "../../../public/pop-bubbles.js";
+
+    const launch = document.querySelector<HTMLButtonElement>("#launch-bubbles");
+    launch?.addEventListener("click", () => startBubbles());
+  </script>
+</Base>

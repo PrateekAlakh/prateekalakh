@@ -1,0 +1,85 @@
+---
+import Base from "../layouts/Base.astro";
+
+const work = [
+  {
+    title: "Multi-Cloud Asset Management Platform",
+    copy: "A platform for discovering, enriching and synchronizing cloud infrastructure data across multiple providers.",
+    href: "/built/cloud-assets",
+  },
+  {
+    title: "Cloud Governance Platform Engineering",
+    copy: "Improving the observability, reliability and efficiency of enterprise cloud governance workflows.",
+    href: "/built/cloud-governance",
+  },
+  {
+    title: "Cloud Security Intelligence and Remediation Platform",
+    copy: "A multi-cloud platform connecting security findings with resource ownership, operational visibility and automated remediation.",
+    href: "/built/cloud-security",
+  },
+  {
+    title: "FinOps and Cloud Cost Optimization Platform",
+    copy: "Building visibility, accountability and smarter decision-making into enterprise cloud spending.",
+    href: "/built/finops",
+  },
+];
+
+const personal = [
+  {
+    title: "Pop Some Bubbles",
+    copy: "An interactive little experiment that lets bubbles take over your screen, without taking over your website.",
+    href: "/built/bubbles",
+  },
+];
+---
+
+<Base
+  title="Things I've Built"
+  description="A collection of ideas, projects and experiments."
+>
+  <header class="page-hero">
+    <p class="eyebrow">Things I've Built</p>
+    <h1 class="wide-title">
+      A collection of ideas,<br />
+      projects and experiments.
+    </h1>
+    <div class="lede">
+      <p>
+        Some of these come from work, and some are personal. Each one is a short introduction, not the whole story.
+      </p>
+    </div>
+  </header>
+
+  <section class="section" aria-labelledby="work-label">
+    <h2 id="work-label" class="group-label">From work</h2>
+    {
+      work.map((item) => (
+        <article class="story">
+          <a class="story-card" href={item.href}>
+            <h3>{item.title}</h3>
+            <p>{item.copy}</p>
+            <span class="story-more">Read the story</span>
+          </a>
+        </article>
+      ))
+    }
+
+    <h2 class="group-label">Away from work</h2>
+    {
+      personal.map((item) => (
+        <article class="story">
+          <a class="story-card" href={item.href}>
+            <h3>{item.title}</h3>
+            <p>{item.copy}</p>
+            <span class="story-more">Read the story</span>
+          </a>
+        </article>
+      ))
+    }
+  </section>
+
+  <a class="pager" href="/explored">
+    <small>Next</small>
+    <span>Things I've Explored</span>
+  </a>
+</Base>

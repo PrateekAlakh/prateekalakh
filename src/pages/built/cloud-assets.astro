@@ -1,0 +1,261 @@
+---
+import Base from "../../layouts/Base.astro";
+
+const stages = [
+  {
+    index: "01",
+    title: "Discovery and enrichment",
+    summary: "Collect infrastructure data and add the ownership and business context that makes it useful.",
+    copy: "Infrastructure information was collected from cloud APIs, asset inventory exports and internal data sources. Resource details were combined with ownership, team and business information to create a more complete picture of each asset.",
+  },
+  {
+    index: "02",
+    title: "Transformation",
+    summary: "Validate, clean and map the data to fit the existing enterprise data model.",
+    copy: "The collected data was validated, cleaned and enriched. This stage also handled mapping cloud resources to the existing ServiceNow CMDB classes and relationships. Working within an established CMDB structure presented its own challenges. Cloud resources did not always have a direct equivalent in the existing data model, so the mappings had to account for both the available fields and the relationships expected by the CMDB.",
+  },
+  {
+    index: "03",
+    title: "Synchronization",
+    summary: "Validate the proposed changes through dry runs, then synchronize the data.",
+    copy: "The transformed data was synchronized with the appropriate CMDB classes. Dry-run execution allowed proposed changes to be validated before they were applied.",
+  },
+];
+
+const decisions = [
+  {
+    title: "Independent cloud integrations",
+    copy: "Each provider had its own collection package, keeping cloud-specific discovery logic separate and preventing implementations from interfering with one another.",
+  },
+  {
+    title: "A shared processing approach",
+    copy: "Discovery, transformation and synchronization followed the same overall pattern across providers, even though the way data was collected differed between cloud environments.",
+  },
+  {
+    title: "Service-level execution",
+    copy: "Each cloud service had dedicated Kubernetes CronJobs for collection, synchronization and dry-run operations. This allowed individual services to be managed and executed independently.",
+  },
+  {
+    title: "Dependency-aware scheduling",
+    copy: "Jobs followed a deliberate sequence, starting with reference data synchronization and cloud hierarchy before moving on to compute, networking and other resource categories. Different schedules helped avoid overwhelming cloud APIs and databases.",
+  },
+  {
+    title: "Flexible data modelling",
+    copy: "Resource types were mapped to the appropriate existing CMDB classes and relationships, working within the constraints of an established enterprise data model.",
+  },
+];
+
+const operations = [
+  {
+    title: "Automatic retries",
+    copy: "Failed jobs had an automatic retry to account for intermittent issues.",
+  },
+  {
+    title: "Slack notifications",
+    copy: "Alerts included error details and the location of the failed job, making investigation easier.",
+  },
+  {
+    title: "Execution history",
+    copy: "Detailed execution records helped with troubleshooting and tracking previous runs.",
+  },
+  {
+    title: "Targeted recovery",
+    copy: "Individual failed operations could be rerun without restarting the entire pipeline.",
+  },
+  {
+    title: "Controlled scheduling",
+    copy: "Services ran on different schedules to manage API usage, database load and processing dependencies.",
+  },
+];
+---
+
+<Base
+  title="Multi-Cloud Asset Management Platform"
+  description="A platform for discovering, enriching and synchronizing cloud infrastructure data across multiple providers."
+>
+  <header class="page-hero">
+    <p class="eyebrow"><a href="/built">Things I've Built</a></p>
+    <h1 class="wide-title">
+      Multi-Cloud Asset<br />
+      Management Platform
+    </h1>
+    <div class="lede">
+      <p>
+        A platform for discovering, enriching and synchronizing cloud infrastructure data across multiple providers.
+      </p>
+      <p>
+        The goal was to bring cloud infrastructure information from different environments and internal systems into one consistent view, making it easier to understand what existed, who owned it and how it related to the wider organization.
+      </p>
+    </div>
+  </header>
+
+  <figure class="flow">
+    <figcaption class="kicker flow-label">How it fits together</figcaption>
+    <p class="flow-kicker">Data sources</p>
+    <div class="flow-sources" aria-label="Data sources">
+      <span>GCP</span>
+      <span>Azure</span>
+      <span>OCI</span>
+      <span>AWS</span>
+      <span>Internal systems</span>
+    </div>
+    <div class="flow-arrow" aria-hidden="true"></div>
+    <ol class="flow-stages">
+      {
+        stages.map((stage) => (
+          <li>
+            <span>{stage.index}</span>
+            <strong>{stage.title}</strong>
+            <p>{stage.summary}</p>
+          </li>
+        ))
+      }
+    </ol>
+    <div class="flow-arrow" aria-hidden="true"></div>
+    <div class="flow-sink">ServiceNow CMDB</div>
+  </figure>
+
+  <div class="chapters section">
+    <section>
+      <h2>The challenge</h2>
+      <div class="prose">
+        <p>
+          As cloud infrastructure grew, maintaining an accurate and useful inventory of resources became increasingly important.
+        </p>
+        <p>
+          The enterprise ServiceNow Configuration Management Database (CMDB) had no automated process for maintaining cloud resource information. Data was spread across cloud environments and internal systems, making it difficult to establish a consistent view of infrastructure, ownership and configuration.
+        </p>
+        <p>
+          There was another gap too: project ownership and business classification were not always complete. Knowing which team owned a project, which business family it belonged to and what services it supported was just as important as discovering the resources themselves.
+        </p>
+        <p>
+          The challenge was to bring these pieces together and establish a reliable way to discover, enrich and synchronize cloud infrastructure information.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2>The approach</h2>
+      <div class="prose">
+        <p>
+          I took ownership of the initial solution, from technical evaluation and proof of concept through architecture, development and deployment.
+        </p>
+        <p>The platform was designed around three stages.</p>
+      </div>
+      <ol class="points">
+        {
+          stages.map((stage) => (
+            <li>
+              <strong>
+                {stage.index}. {stage.title}
+              </strong>
+              <p>{stage.copy}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    <section>
+      <h2>Architecture</h2>
+      <div class="prose">
+        <p>
+          The first implementation focused on GCP. As the platform evolved, the same underlying processing approach was extended to Azure, OCI and AWS.
+        </p>
+        <p>A few architectural decisions helped keep the platform manageable as its scope grew.</p>
+      </div>
+      <ul class="points">
+        {
+          decisions.map((item) => (
+            <li>
+              <strong>{item.title}</strong>
+              <p>{item.copy}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section>
+      <h2>Deployment and operations</h2>
+      <div class="prose">
+        <p>
+          The application ran on Google Kubernetes Engine (GKE), with cloud-specific workloads separated into their own namespaces. Deployment configurations were maintained in a Helm directory and initially released using Helm 3.
+        </p>
+        <p>
+          As organizational deployment standards evolved, I helped transition the release workflow to Argo CD. We introduced a one-click deployment approach that synchronized Helm configurations from designated Git branches with Argo CD-managed releases.
+        </p>
+        <p>Operational reliability was just as important as the initial implementation.</p>
+      </div>
+      <ul class="points">
+        {
+          operations.map((item) => (
+            <li>
+              <strong>{item.title}</strong>
+              <p>{item.copy}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section>
+      <h2>Strengthening cloud governance</h2>
+      <div class="prose">
+        <p>
+          Building automated asset discovery also highlighted a broader governance problem: the organization did not always have complete or accurate information about project ownership and business classification.
+        </p>
+        <p>
+          As part of the cloud governance team, we helped address this by making ownership, business family and service information mandatory for newly created projects.
+        </p>
+        <p>
+          For existing projects, we worked with engineering teams, stakeholders and leadership to identify the appropriate owners and populate missing records.
+        </p>
+        <p>
+          This improved the quality of the information associated with cloud infrastructure and made it easier to track ownership and business alignment. It also benefited downstream systems, including the internal budgeting platform, which relied on accurate project information for cost attribution and reporting.
+        </p>
+        <p>
+          This was a complementary governance initiative rather than simply another feature of the asset management platform, but both efforts contributed to a more reliable view of the cloud environment.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2>My contribution</h2>
+      <div class="prose">
+        <p>
+          I owned the initial solution architecture, technical evaluation, proof of concept and end-to-end GCP implementation. I also took responsibility for deployment workflows, job management and the operational aspects of the platform.
+        </p>
+        <p>
+          As the platform expanded, I led and mentored two engineers, helping them understand the architecture, contribute to the implementation and extend resource coverage. The solution grew beyond its original GCP scope to support Azure, OCI and AWS.
+        </p>
+        <p>
+          The work involved much more than building an integration. It meant turning an ambiguous business requirement into a working platform, navigating the constraints of an existing enterprise data model, coordinating with the asset management team and making sure the architecture could grow without becoming difficult to maintain.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2>The outcome</h2>
+      <div class="prose">
+        <p>
+          The platform established an automated process for discovering, enriching and synchronizing cloud infrastructure information into the enterprise CMDB, across GCP, Azure, OCI and AWS.
+        </p>
+        <p>
+          What began as a solution for a single cloud environment evolved into a multi-cloud platform with independent collection workflows, shared processing stages and operational recovery capabilities.
+        </p>
+        <p>
+          Alongside the technical work, improvements to project ownership and business classification helped strengthen the quality of information used across cloud governance and budgeting processes.
+        </p>
+        <p>
+          One of the most rewarding parts was seeing an idea move from an initial proof of concept into a working platform that other engineers could build on, extend and operate.
+        </p>
+      </div>
+    </section>
+  </div>
+
+  <a class="pager" href="/built">
+    <small>Back</small>
+    <span>Things I've Built</span>
+  </a>
+</Base>

@@ -1,0 +1,266 @@
+---
+import Base from "../../layouts/Base.astro";
+
+const pipeline = [
+  "GCP Billing Export",
+  "BigQuery",
+  "Scheduled Queries",
+  "Python ETL",
+  "Cloud SQL",
+  "FinOps Platform",
+];
+
+const questions = [
+  "Which teams and applications were responsible for the spending?",
+  "How were costs changing over time?",
+  "Which resources were underutilized or no longer needed?",
+  "Were projects operating within their allocated budgets?",
+  "How could cost-saving policies be applied consistently without disrupting applications?",
+  "How could developers understand the financial implications of infrastructure choices before adopting them?",
+];
+
+const capabilities = [
+  "Cost reporting and historical spending trends.",
+  "Project- and service-level cost visibility.",
+  "Spending breakdowns by owners and organizational groups.",
+  "Budget allocation and tracking.",
+  "Cost-saving dashboards and reports.",
+  "Audit and exclusion management.",
+];
+
+const contribution = [
+  "Designing and implementing the Python-based cost reporting, data processing and aggregation workflows.",
+  "Building the resource scanning and policy enforcement capabilities.",
+  "Developing backend functionality across the platform's major features.",
+  "Contributing to the frontend, including application pages and user-facing workflows.",
+  "Designing UI concepts and page layouts in Figma.",
+  "Participating in architectural discussions as the platform expanded.",
+  "Working with the team to evolve the platform based on operational and developer needs.",
+];
+---
+
+<Base
+  title="FinOps and Cloud Cost Optimization Platform"
+  description="Building visibility, accountability and smarter decision-making into enterprise cloud spending."
+>
+  <header class="page-hero">
+    <p class="eyebrow"><a href="/built">Things I've Built</a></p>
+    <h1 class="wide-title">
+      FinOps and Cloud<br />
+      Cost Optimization Platform
+    </h1>
+    <div class="lede">
+      <p>
+        Building visibility, accountability and smarter decision-making into enterprise cloud spending.
+      </p>
+      <p>
+        The goal was not simply to reduce cloud spending. It was to establish a more thoughtful and sustainable approach to managing cloud resources across the organization.
+      </p>
+    </div>
+  </header>
+
+  <figure class="flow">
+    <figcaption class="kicker flow-label">How the cost data moves</figcaption>
+    <div class="flow-sources centered" aria-label="Cost intelligence pipeline">
+      {pipeline.map((step) => <span>{step}</span>)}
+    </div>
+  </figure>
+
+  <div class="chapters section">
+    <section>
+      <h2>Overview</h2>
+      <div class="prose">
+        <p>
+          As cloud adoption grew, so did the challenge of understanding where money was being spent, identifying waste, and making sure infrastructure investments were justified.
+        </p>
+        <p>
+          What started as an effort to improve cloud cost visibility evolved into a broader FinOps platform. It brought together cost reporting, budgeting, resource utilization insights, policy enforcement, ownership information and tools to help development teams make better infrastructure decisions.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2>The challenge</h2>
+      <div class="prose">
+        <p>
+          Cloud billing data provided a view of expenditure, but it wasn't enough to answer the questions the organization needed to ask.
+        </p>
+      </div>
+      <ul class="points">
+        {questions.map((item) => (
+          <li>
+            <p>{item}</p>
+          </li>
+        ))}
+      </ul>
+      <div class="prose">
+        <p>
+          Addressing these questions required more than dashboards. It required a platform that could connect financial data with infrastructure, ownership and operational context.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2>The cost intelligence pipeline</h2>
+      <div class="prose">
+        <p>
+          One of the foundational pieces was transforming native cloud billing data into information that was useful for the organization's FinOps processes.
+        </p>
+        <p>
+          Google Cloud billing exports were already available in BigQuery. Scheduled queries generated summarized cost data, which a Python application collected and further processed.
+        </p>
+        <p>
+          The application transformed, aggregated and enriched daily cost information according to organizational requirements, including project, service and ownership dimensions. The resulting data was stored in Cloud SQL and consumed by the FinOps platform and other services.
+        </p>
+        <p>
+          This separated the collection of native billing information from the business-oriented cost intelligence needed by the organization. The processed data supported cost reporting, spending trends, ownership-based analysis, budget calculations and other platform capabilities.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Cost visibility and budgeting</h2>
+      <div class="prose">
+        <p>
+          The platform provided a centralized view of cloud expenditure, allowing teams to understand spending across different organizational dimensions.
+        </p>
+      </div>
+      <ul class="points">
+        {capabilities.map((item) => (
+          <li>
+            <p>{item}</p>
+          </li>
+        ))}
+      </ul>
+      <div class="prose">
+        <p>
+          The budgeting model connected projects to an organizational structure based on PPS Families. Budgets were allocated at the project level, and projects were expected to belong to an active PPS Family.
+        </p>
+        <p>
+          This helped establish a clearer relationship between cloud expenditure, organizational ownership and financial accountability.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2>From visibility to cost optimization</h2>
+      <div class="prose">
+        <p>
+          One of the most interesting parts of the work was moving beyond reporting and introducing automated cost-saving policies.
+        </p>
+        <p>
+          Compute resources represented a significant portion of cloud expenditure. An initial cost-reduction initiative focused on identifying virtual machines in lower environments that were running for extended periods while showing consistently low CPU utilization.
+        </p>
+        <p>The idea evolved into a more systematic policy enforcement approach.</p>
+        <p>
+          The platform could identify resources that matched defined cost-saving policies and notify their owners before action was taken. Teams had an opportunity to bring resources back if they still needed them. Many resources were never restarted, indicating that they were no longer required.
+        </p>
+        <p>
+          Not every application could be treated the same way. Some environments had complex dependencies or recovery considerations. These cases were handled individually, with exclusions and timelines where teams needed more time to improve their systems.
+        </p>
+        <p>
+          This made policy enforcement more than a simple shutdown mechanism. It became a way to introduce consistent cost-saving practices while accounting for real application requirements.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Exclusion management</h2>
+      <div class="prose">
+        <p>Automated policies need a way to handle legitimate exceptions.</p>
+        <p>
+          Rather than treating exclusions as informal overrides, the platform managed them through code-based configurations. This provided a controlled process with justification, appropriate approvals and an auditable history of changes.
+        </p>
+        <p>
+          The intention was to make exceptions traceable and accountable while allowing teams to operate applications that genuinely needed different treatment.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Resource optimization and recommendations</h2>
+      <div class="prose">
+        <p>
+          The platform also provided visibility into resource configurations, utilization and associated costs, helping teams identify opportunities to improve efficiency. Google Cloud's native recommendations were used as inputs to the optimization process.
+        </p>
+        <p>
+          An important principle was that rightsizing should not mean selecting the smallest or cheapest possible machine. The right configuration depends on the application's requirements, workload characteristics and ability to scale.
+        </p>
+        <p>
+          Actual machine configuration changes were handled through a separate centralized provisioning and governance capability. The FinOps platform supported the decision-making process through reporting, recommendations and visibility rather than directly changing machine types.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Making infrastructure costs easier to understand</h2>
+      <div class="prose">
+        <p>
+          Another developer-focused capability was the Cost Estimation Tool. The idea was simple: developers should be able to understand the potential cost of their infrastructure before they started building it.
+        </p>
+        <p>
+          Users could select multiple Google Cloud services, provide the configuration details requested for each service and generate an estimated cost. Behind the scenes, the tool used Google's pricing calculator API while following organizational FinOps conventions.
+        </p>
+        <p>
+          It also provided budget comparisons and recommendations, helping developers get an idea of the financial commitment associated with their proposed infrastructure. The tool was intended to make early-stage cost planning easier, rather than serve as a provisioning or approval workflow.
+        </p>
+        <p>
+          There were also ideas for taking the tool further. Inspired by how people compare electronic products before purchasing them, the vision was to let developers compare different cloud services and configurations against their actual application requirements.
+        </p>
+        <p>
+          Instead of looking at cost in isolation, a decision matrix could present capabilities, performance considerations, pricing and other relevant criteria side by side. Developers could prioritize the factors that mattered most to their application and make a more objective decision.
+        </p>
+        <p>
+          The cheapest option isn't always the right one. The aim was to help developers understand the trade-offs and choose the most suitable solution for their needs. These comparisons and decision matrices remained part of the future vision rather than completed functionality.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2>My contribution</h2>
+      <div class="prose">
+        <p>
+          I worked as part of a three-engineer team, contributing across the platform rather than owning just one isolated component.
+        </p>
+        <p>
+          I helped shape the architecture and design of the solution, and took primary engineering ownership of much of its backend implementation.
+        </p>
+      </div>
+      <ul class="points">
+        {contribution.map((item) => (
+          <li>
+            <p>{item}</p>
+          </li>
+        ))}
+      </ul>
+      <div class="prose">
+        <p>
+          The architecture and direction were shaped collaboratively, with responsibilities distributed across the team as the platform matured. I contributed to a significant portion of the implementation, particularly across the backend and the platform's core workflows.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2>The outcome</h2>
+      <div class="prose">
+        <p>
+          The platform evolved from an effort to understand cloud expenditure into a broader approach to cloud financial management.
+        </p>
+        <p>
+          It helped the organization move toward more informed spending decisions, better resource utilization, clearer ownership and more consistent cost-saving practices. It also established a foundation for developers to consider financial implications earlier in the infrastructure lifecycle.
+        </p>
+        <p>
+          What I found particularly rewarding was seeing the numbers become meaningful: understanding where money was going, identifying opportunities to reduce waste, and building systems that could turn those insights into practical improvements.
+        </p>
+        <p>
+          Cloud cost optimization isn't just about spending less. It's about making better decisions about the resources we use, why we use them and the value they deliver.
+        </p>
+      </div>
+    </section>
+  </div>
+
+  <a class="pager" href="/built">
+    <small>Back</small>
+    <span>Things I've Built</span>
+  </a>
+</Base>

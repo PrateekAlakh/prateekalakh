@@ -1,0 +1,237 @@
+---
+import Base from "../../layouts/Base.astro";
+
+const paths = [
+  {
+    label: "Ownership",
+    steps: ["GitLab", "Terraform", "Firestore"],
+  },
+  {
+    label: "GCP",
+    steps: ["Security Command Center", "BigQuery", "Grafana", "PagerDuty"],
+  },
+  {
+    label: "Other clouds",
+    steps: ["Security notifications", "Python", "Grafana", "ServiceNow"],
+  },
+];
+
+const ownership = [
+  "Introduced mandatory ownership, application, SRE and business classification information for newly created cloud projects.",
+  "Worked with SRE teams and stakeholders to investigate and identify ownership for approximately 900 existing projects.",
+  "Used the governance GitLab repository as the source of truth for ownership metadata.",
+  "Synchronized governance information into Firestore through Terraform modules.",
+  "Used Firestore as the ownership data source for the security platform.",
+];
+
+const dashboards = [
+  "Overall findings across Critical, High, Medium and Low severity levels.",
+  "Historical trends and severity distribution.",
+  "Findings grouped by PPS family, SRE team and GCP project.",
+  "Project-level security visibility.",
+  "Finding category and resource-type breakdowns.",
+  "Ownership and operational routing information.",
+  "Detailed, filterable findings tables containing individual security findings and their associated resource and ownership information.",
+];
+
+const contribution = [
+  "Designing the overall security intelligence and remediation architecture.",
+  "Establishing the ownership model and its integration with cloud governance.",
+  "Implementing Python-based security data processing and operational automation.",
+  "Configuring BigQuery integration with Grafana and developing dashboard queries.",
+  "Building security dashboards and alerting workflows.",
+  "Implementing severity-based prioritization and ServiceNow incident automation.",
+  "Designing duplicate-incident handling and recurrence tracking.",
+  "Integrating ownership information so findings could be associated with the right operational teams.",
+];
+---
+
+<Base
+  title="Cloud Security Intelligence and Remediation Platform"
+  description="A multi-cloud platform connecting security findings with resource ownership, operational visibility and automated remediation."
+>
+  <header class="page-hero">
+    <p class="eyebrow"><a href="/built">Things I've Built</a></p>
+    <h1 class="wide-title">
+      Cloud Security Intelligence<br />
+      and Remediation Platform
+    </h1>
+    <div class="lede">
+      <p>
+        A multi-cloud platform connecting security findings with resource ownership, operational visibility and automated remediation.
+      </p>
+      <p>
+        The goal was to connect security intelligence with organizational ownership and turn findings into actionable operational workflows.
+      </p>
+    </div>
+  </header>
+
+  <figure class="flow">
+    <figcaption class="kicker flow-label">How it fits together</figcaption>
+    {
+      paths.map((path) => (
+        <div class="flow-path">
+          <p class="flow-kicker">{path.label}</p>
+          <div class="flow-sources centered">
+            {path.steps.map((step) => (
+              <span>{step}</span>
+            ))}
+          </div>
+        </div>
+      ))
+    }
+  </figure>
+
+  <div class="chapters section">
+    <section>
+      <h2>The problem</h2>
+      <div class="prose">
+        <p>
+          Cloud security findings were being generated across multiple environments, but identifying and acting on them wasn't straightforward.
+        </p>
+        <p>
+          In GCP, Security Command Center provided extensive security findings, but those findings largely remained within the cloud environment. Teams needed a consolidated way to understand their security posture, identify affected resources, establish ownership and determine who was responsible for remediation.
+        </p>
+        <p>
+          Ownership information was another challenge. Project ownership, application responsibility, SRE teams and business classifications weren't consistently available. For approximately 900 existing GCP projects, ownership had to be investigated and reconstructed by working with SRE teams and relevant stakeholders.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2>The solution</h2>
+      <div class="prose">
+        <p>
+          I architected and built a multi-cloud security intelligence and remediation platform, bringing together security findings, ownership information, dashboards, alerting and incident management.
+        </p>
+        <p>
+          The solution provided a common operational view of security issues while accommodating the different security data sources and integration mechanisms across cloud providers.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Establishing ownership as a foundation</h2>
+      <div class="prose">
+        <p>
+          Before security findings could be routed to the right people, we needed reliable ownership information. I established an ownership model integrated with the existing cloud governance process.
+        </p>
+      </div>
+      <ul class="points">
+        {ownership.map((item) => (
+          <li>
+            <p>{item}</p>
+          </li>
+        ))}
+      </ul>
+      <div class="prose">
+        <p>
+          This established a reusable ownership foundation that could support security operations and other governance integrations.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Multi-cloud security data</h2>
+      <div class="prose">
+        <p>The platform supported different ingestion mechanisms depending on the cloud provider.</p>
+        <p>
+          For GCP, I used Security Command Center's native export to make findings available in BigQuery. I configured BigQuery as a Grafana data source, authenticated through a dedicated service account, and developed SQL queries to report on the findings.
+        </p>
+        <p>That path was Security Command Center, then BigQuery, Grafana, alerts and PagerDuty. It gave direct access to the findings for reporting and alerting without a separate ingestion service for GCP.</p>
+        <p>
+          For the other cloud environments, I developed Python-based processing to collect security notification data and prepare it for reporting. The application populated the reporting data source consumed by Grafana, and separately handled the operational alerting and incident-management workflow.
+        </p>
+        <p>
+          This allowed the platform to accommodate different cloud security integrations without forcing every provider into the same ingestion architecture.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Security visibility and investigation</h2>
+      <div class="prose">
+        <p>
+          I built Grafana dashboards to provide a consolidated view of security findings and their organizational context.
+        </p>
+        <p>
+          Rather than limiting the dashboards to total finding counts, I designed multiple panels to help teams understand where security issues existed and who was responsible for addressing them.
+        </p>
+      </div>
+      <ul class="points">
+        {dashboards.map((item) => (
+          <li>
+            <p>{item}</p>
+          </li>
+        ))}
+      </ul>
+      <div class="prose">
+        <p>
+          The detailed findings view was particularly important. Users could move from a high-level security overview to an individual finding and understand both the affected resource and the team responsible for it.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Alerting and incident management</h2>
+      <div class="prose">
+        <p>A major design consideration was avoiding alert fatigue.</p>
+        <p>
+          Automatically creating an incident for every security finding would have generated unnecessary noise and overwhelmed operational teams. Instead, I introduced a prioritization approach.
+        </p>
+        <p>
+          We initially generated reports to understand the findings, evaluate their impact and determine appropriate grouping and severity-based handling rules. The resulting approach distinguished between findings that required governance visibility and those that needed direct remediation.
+        </p>
+        <p>
+          For GCP, Grafana alert rules were integrated directly with PagerDuty, allowing relevant security alerts to reach operational teams.
+        </p>
+        <p>
+          For the other cloud providers, I built a Python application layer responsible for alerting, notifications and ServiceNow incident creation. The application performed daily scans, applied filtering and prioritization rules, and routed incidents according to the responsible ownership and assignment groups.
+        </p>
+        <p>
+          Observation-level findings were communicated to the governance team. Critical and High findings were routed to the responsible owner teams for remediation.
+        </p>
+        <p>
+          I also implemented duplicate-incident prevention. When an existing finding resurfaced during a subsequent scan, the system updated the existing incident's notes rather than creating another incident. This preserved recurrence information while preventing unnecessary ticket duplication.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2>My contribution</h2>
+      <div class="prose">
+        <p>
+          I architected and built the platform, taking responsibility for the solution design and implementation.
+        </p>
+      </div>
+      <ul class="points">
+        {contribution.map((item) => (
+          <li>
+            <p>{item}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section>
+      <h2>The outcome</h2>
+      <div class="prose">
+        <p>The platform connected security findings with the organizational information required to act on them.</p>
+        <p>
+          Instead of security findings remaining isolated within individual cloud environments, teams gained a consolidated view of security issues, resource ownership and remediation responsibility.
+        </p>
+        <p>
+          It also introduced a more deliberate approach to security operations: prioritizing findings, routing them to the right teams, reducing duplicate incidents and making recurring issues visible.
+        </p>
+        <p>
+          The central idea was simple: identifying a security problem is only the beginning. The real value comes from knowing who owns it and making sure it gets addressed.
+        </p>
+      </div>
+    </section>
+  </div>
+
+  <a class="pager" href="/built">
+    <small>Back</small>
+    <span>Things I've Built</span>
+  </a>
+</Base>

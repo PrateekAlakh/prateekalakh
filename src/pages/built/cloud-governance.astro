@@ -1,0 +1,227 @@
+---
+import Base from "../../layouts/Base.astro";
+
+const collectors = [
+  {
+    index: "01",
+    title: "Job monitoring",
+    summary: "Collected job execution details, statuses and runtime information.",
+  },
+  {
+    index: "02",
+    title: "Pipeline monitoring",
+    summary: "Tracked pipeline activity and execution status.",
+  },
+  {
+    index: "03",
+    title: "Merge request monitoring",
+    summary: "Collected merge request information and activity.",
+  },
+];
+
+const dashboards = [
+  "Successful, failed and total job executions.",
+  "Pipeline and merge request activity.",
+  "Average execution frequency and runtime.",
+  "Detailed execution history and status.",
+  "Trends in failures and processing times.",
+];
+
+const contribution = [
+  "Python-based collectors for GitLab job, pipeline and merge request data.",
+  "Redis integration for consolidating collected information.",
+  "A custom metrics exporter exposing metrics for VictoriaMetrics.",
+  "Grafana dashboards for repository monitoring and operational visibility.",
+  "Alerting for abnormal failure patterns.",
+];
+---
+
+<Base
+  title="Cloud Governance Platform Engineering"
+  description="Improving the observability, reliability and efficiency of enterprise cloud governance workflows."
+>
+  <header class="page-hero">
+    <p class="eyebrow"><a href="/built">Things I've Built</a></p>
+    <h1 class="wide-title">
+      Cloud Governance<br />
+      Platform Engineering
+    </h1>
+    <div class="lede">
+      <p>
+        Improving the observability, reliability and efficiency of enterprise cloud governance workflows.
+      </p>
+      <p>
+        The goal was to make the governance platform more observable, reliable and efficient for the teams depending on it.
+      </p>
+    </div>
+  </header>
+
+  <figure class="flow">
+    <figcaption class="kicker flow-label">How it fits together</figcaption>
+    <p class="flow-kicker">Source</p>
+    <div class="flow-sources centered" aria-label="Source">
+      <span>GitLab</span>
+    </div>
+    <div class="flow-arrow" aria-hidden="true"></div>
+    <ol class="flow-stages">
+      {
+        collectors.map((item) => (
+          <li>
+            <span>{item.index}</span>
+            <strong>{item.title}</strong>
+            <p>{item.summary}</p>
+          </li>
+        ))
+      }
+    </ol>
+    <div class="flow-arrow" aria-hidden="true"></div>
+    <div class="flow-sink">Redis</div>
+    <div class="flow-arrow" aria-hidden="true"></div>
+    <div class="flow-sources centered" aria-label="Metrics path">
+      <span>Metrics exporter</span>
+      <span>VictoriaMetrics</span>
+      <span>Grafana</span>
+    </div>
+  </figure>
+
+  <div class="chapters section">
+    <section>
+      <h2>The challenge</h2>
+      <div class="prose">
+        <p>
+          A mature cloud governance repository was being used continuously by multiple SRE teams supporting numerous development teams. It served as a central entry point for infrastructure requests, with changes going through automated validation, Terraform planning, ownership approvals and cost checks before they could be merged.
+        </p>
+        <p>As adoption grew, so did the operational complexity.</p>
+        <p>
+          There was limited visibility into repository activity, pipeline health and execution performance. Understanding failures, identifying bottlenecks and tracking the overall behaviour of the platform required a dedicated monitoring solution.
+        </p>
+        <p>
+          The merge process also introduced friction. Approvers frequently handled multiple infrastructure requests, and repeated rebasing and pipeline execution made the process slower than it needed to be.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2>A custom observability system</h2>
+      <div class="prose">
+        <p>
+          I designed and developed a monitoring solution to provide operational visibility into the governance repository.
+        </p>
+        <p>
+          The application was built using Python and deployed on Google Kubernetes Engine (GKE). It consisted of three independent containers, each responsible for collecting a different category of GitLab information: jobs, pipelines and merge requests.
+        </p>
+        <p>
+          Each collector periodically retrieved information from the GitLab APIs, approximately every two minutes, and stored the collected data in a shared Redis instance.
+        </p>
+        <p>
+          A separate metrics exporter retrieved the consolidated information from Redis, converted it into metrics and exposed them through an HTTP endpoint. The existing VictoriaMetrics infrastructure automatically scraped these metrics, while Grafana provided the visualization layer.
+        </p>
+        <p>
+          One of the interesting design decisions was introducing Redis between data collection and metric generation. By consolidating the collected information in one place, the exporter could retrieve what it needed through a single lookup rather than coordinating multiple collectors or repeatedly querying the GitLab APIs.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Monitoring and operational visibility</h2>
+      <div class="prose">
+        <p>
+          The collected information was presented through three Grafana dashboards covering jobs, pipelines and merge requests.
+        </p>
+        <p>The dashboards provided visibility into:</p>
+      </div>
+      <ul class="points">
+        {dashboards.map((item) => (
+          <li>
+            <p>{item}</p>
+          </li>
+        ))}
+      </ul>
+      <div class="prose">
+        <p>
+          We also introduced alerting for abnormal failure levels. When failures exceeded expected thresholds, the team received notifications so potential problems could be investigated.
+        </p>
+        <p>
+          This gave us a much clearer understanding of how the repository was behaving. We could identify recurring failures, observe execution-time trends and use the collected information to improve pipeline performance and operational reliability.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Improving the merge workflow</h2>
+      <div class="prose">
+        <p>Another important improvement was introducing GitLab Merge Trains.</p>
+        <p>
+          The governance repository supported multiple SRE teams, each handling infrastructure requests for several development teams. As a result, individual approvers could be responsible for reviewing and merging numerous merge requests.
+        </p>
+        <p>The existing process created unnecessary repetition.</p>
+        <p>
+          Merge requests needed to be rebased against the latest target branch, and all required validation jobs had to pass before merging. If another merge request was merged in the meantime, the remaining requests needed to be rebased again, triggering another round of validation.
+        </p>
+        <p>These pipelines included:</p>
+      </div>
+      <ul class="points">
+        <li><p>Dynamic pipeline generation.</p></li>
+        <li><p>Terraform planning for affected resources.</p></li>
+        <li><p>CODEOWNERS-based approval requirements.</p></li>
+        <li><p>Infrastructure cost validation against available project budgets.</p></li>
+      </ul>
+      <div class="prose">
+        <p>
+          Since these validations ran on every commit, repeated rebasing resulted in additional pipeline executions and waiting time for both engineers and approvers.
+        </p>
+        <p>
+          Merge Trains helped address this by allowing merge requests to be queued for integration against the target branch. Instead of manually coordinating rebases and waiting for the branch to become available, approvers could add eligible merge requests to the train.
+        </p>
+        <p>
+          The train's validation process helped identify integration issues before changes reached the target branch, reducing the manual effort involved in coordinating multiple infrastructure changes.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2>My contribution</h2>
+      <div class="prose">
+        <p>I designed and implemented the monitoring application, including:</p>
+      </div>
+      <ul class="points">
+        {contribution.map((item) => (
+          <li>
+            <p>{item}</p>
+          </li>
+        ))}
+      </ul>
+      <div class="prose">
+        <p>
+          Beyond the monitoring solution, I contributed to improving the governance repository's CI/CD workflows and operational maturity.
+        </p>
+        <p>
+          This included helping introduce Merge Trains to reduce repeated rebasing and unnecessary pipeline executions, making the infrastructure request and approval process more efficient for the teams using the repository.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2>The outcome</h2>
+      <div class="prose">
+        <p>
+          The governance repository gained a dedicated observability layer, providing visibility into its jobs, pipelines and merge requests through centralized dashboards and alerts.
+        </p>
+        <p>
+          The collected metrics helped the team understand execution patterns, investigate failures and identify opportunities to improve pipeline performance.
+        </p>
+        <p>
+          The introduction of Merge Trains also streamlined the merge process for teams handling multiple infrastructure requests, reducing the coordination and repeated validation effort associated with rebasing.
+        </p>
+        <p>
+          For me, the most rewarding part was building something that went beyond monitoring individual pipeline runs. It gave us the visibility needed to understand how an important engineering platform behaved and continuously make it better.
+        </p>
+      </div>
+    </section>
+  </div>
+
+  <a class="pager" href="/built">
+    <small>Back</small>
+    <span>Things I've Built</span>
+  </a>
+</Base>
