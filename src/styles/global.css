@@ -1,3 +1,19 @@
+@font-face {
+  font-family: Outfit;
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("../fonts/outfit-latin.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: Fraunces;
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("../fonts/fraunces-italic-latin.woff2") format("woff2");
+}
+
 :root {
   --bg: #070706;
   --ink: #f4f0e6;
@@ -784,6 +800,35 @@ h1 em {
 @media (max-width: 800px) {
   :root {
     --wrap: min(1120px, calc(100% - 32px));
+  }
+
+  .site-header .bar {
+    flex-wrap: nowrap;
+    gap: 12px;
+    padding: 12px 0;
+  }
+
+  .nav {
+    flex-wrap: nowrap;
+    gap: 8px 18px;
+    margin-right: 0;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+  }
+
+  .nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .nav a {
+    flex: none;
+  }
+
+  @media (max-width: 640px) {
+    .nav {
+      mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent);
+    }
   }
 
   .status {
