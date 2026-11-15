@@ -64,7 +64,18 @@ const nav = [
     <footer class="site-footer">
       <div class="wrap bar">
         <span>© {year} Prateek Alakh</span>
-        <span>A small window into a much bigger world.</span>
+        <span class="footer-end">
+          <span>A small window into a much bigger world.</span>
+          <button class="signal" type="button" id="first-contact" aria-label="Definitely not attempting extraterrestrial communication.">
+            <svg viewBox="0 0 32 32" aria-hidden="true">
+              <path d="M8 21.5h16M11 21.5l2.2-6.2h5.6L21 21.5" />
+              <path d="M16 15.3V9.2" />
+              <path d="M16 9.2c2.4-2.6 6.2-2.2 8.2.4M16 9.2C13.6 6.6 9.8 7 7.8 9.6" />
+              <circle cx="16" cy="8.2" r="1.1" />
+            </svg>
+            <span class="signal-tip">Definitely not attempting extraterrestrial communication.</span>
+          </button>
+        </span>
       </div>
     </footer>
 
@@ -84,6 +95,12 @@ const nav = [
       } else {
         glow?.remove();
       }
+
+      const signal = document.querySelector<HTMLButtonElement>("#first-contact");
+      signal?.addEventListener("click", async () => {
+        const firstContact = await import("../first-contact/overlay");
+        firstContact.openFirstContact(signal);
+      });
     </script>
   </body>
 </html>
