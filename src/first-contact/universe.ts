@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { planets, type PlanetId } from "./planetData";
+import { planetById, planets, type PlanetId } from "./planetData";
 
 export type UniversePick =
   | { kind: "planet"; id: PlanetId }
@@ -20,6 +20,18 @@ interface Body {
   phase: number;
   height: number;
   radius: number;
+  reach: number;
+}
+
+const RING_OUTER = 1.85;
+const ORBIT_GAP = 0.85;
+const UNKNOWN_WANDER = 0.7;
+
+function reachOf(planet: (typeof planets)[number]) {
+  if (planet.id === "procrastina") return planet.radius * RING_OUTER;
+  if (planet.id === "bugfix") return planet.radius + 0.35 + 3 * 0.12 + 0.16;
+  if (planet.id === "monday") return planet.radius * 1.08;
+  return planet.radius * 1.18;
 }
 
 export class UniverseScene {
@@ -40,8 +52,10 @@ export class UniverseScene {
   private last = performance.now();
   private theta = 0.55;
   private phi = 1.12;
-  private radius = 12;
-  private targetRadius = 12;
+  private radius = 18;
+  private targetRadius = 18;
+  private homeRadius = 18;
+  private shipRadius = 1.8;
   private target = new THREE.Vector3();
   private desiredTarget = new THREE.Vector3();
   private focusId: PlanetId | null = null;
@@ -56,6 +70,8 @@ export class UniverseScene {
     private readonly canvas: HTMLCanvasElement,
     private readonly onPick: (pick: UniversePick) => void,
     private readonly reduceMotion: boolean,
+    private readonly onGlance: (label: string | null) => void = () => {},
+    private readonly onMiss: () => void = () => {},
   ) {
     this.scene.background = new THREE.Color(0x07070c);
     this.scene.fog = new THREE.FogExp2(0x07070c, 0.018);
@@ -98,7 +114,7 @@ export class UniverseScene {
     this.focusId = id;
     if (!id) {
       this.desiredTarget.set(0, 0, 0);
-      this.targetRadius = 12;
+      this.targetRadius = this.homeRadius;
       return;
     }
     const body = this.bodies.find((item) => item.id === id);
@@ -199,7 +215,7 @@ export class UniverseScene {
 
       if (planet.id === "procrastina") {
         const ring = new THREE.Mesh(
-          this.track(new THREE.RingGeometry(planet.radius * 1.45, planet.radius * 2.15, 64)),
+          this.track(new THREE.RingGeometry(planet.radius * 1.35, planet.radius * RING_OUTER, 64)),
           this.shade(
             new THREE.MeshBasicMaterial({
               color: 0xc7b7ff,
@@ -257,13 +273,30 @@ export class UniverseScene {
         id: planet.id,
         pivot,
         mesh,
-        orbit: planet.orbit,
+        orbit: 0,
         speed: planet.speed,
         phase: planet.phase,
         height: planet.height,
         radius: planet.radius,
+        reach: reachOf(planet),
       });
     }
+    this.separateOrbits();
+  }
+
+  private separateOrbits() {
+    let innerEdge = 2.4;
+    let outerEdge = innerEdge;
+    for (const body of this.bodies) {
+      const wander = body.id === "unknown" ? UNKNOWN_WANDER : 0;
+      body.orbit = innerEdge + body.reach + wander;
+      innerEdge = body.orbit + body.reach + wander + ORBIT_GAP;
+      outerEdge = innerEdge;
+    }
+    this.shipRadius = Math.max(1.2, (this.bodies[0] ? this.bodies[0].orbit - this.bodies[0].reach : 2.4) * 0.55);
+    this.homeRadius = Math.max(16, outerEdge * 1.05);
+    this.radius = this.homeRadius;
+    this.targetRadius = this.homeRadius;
   }
 
   private addShip() {
@@ -294,7 +327,9 @@ export class UniverseScene {
         }),
       ),
     );
-    mesh.position.set(6.5, 2.4, -7.5);
+    const last = this.bodies.at(-1);
+    const beyond = (last?.orbit ?? 12) + (last?.id === "unknown" ? UNKNOWN_WANDER : 0) + (last?.reach ?? 1) + 1.8;
+    mesh.position.set(beyond * 0.15, 3.4, -beyond);
     mesh.userData = { pick: "signal" } satisfies PickData;
     this.scene.add(mesh);
     this.pickables.push(mesh);
@@ -313,7 +348,9 @@ export class UniverseScene {
         }),
       ),
     );
-    mesh.position.set(-18, -1.2, 12);
+    const last = this.bodies.at(-1);
+    const beyond = (last?.orbit ?? 12) + (last?.id === "unknown" ? UNKNOWN_WANDER : 0) + (last?.reach ?? 1) + 6;
+    mesh.position.set(-beyond, -1.2, beyond * 0.4);
     mesh.userData = { pick: "earth" } satisfies PickData;
     this.scene.add(mesh);
     this.pickables.push(mesh);
@@ -359,7 +396,12 @@ export class UniverseScene {
     this.moved = false;
     this.downX = event.clientX;
     this.downY = event.clientY;
-    this.canvas.setPointerCapture(event.pointerId);
+    this.canvas.style.cursor = "grabbing";
+    try {
+      this.canvas.setPointerCapture(event.pointerId);
+    } catch {
+      /* The pointer can already be gone. */
+    }
   };
 
   private onMove = (event: PointerEvent) => {
@@ -393,20 +435,30 @@ export class UniverseScene {
     const wasDrag = this.moved;
     this.pointers.delete(event.pointerId);
     if (this.pointers.size < 2) this.pinch = null;
-    if (!wasDrag && this.pointers.size === 0) this.pick(event.clientX, event.clientY);
+    if (this.pointers.size === 0) {
+      if (wasDrag) this.canvas.style.cursor = "grab";
+      else this.pick(event.clientX, event.clientY);
+    }
   };
 
   private hover(x: number, y: number) {
     const hit = this.cast(x, y);
     const mesh = hit?.object instanceof THREE.Mesh ? hit.object : null;
+    const pick = mesh?.userData.pick;
     if (this.hovering && this.hovering !== mesh) this.hovering.scale.setScalar(this.scaleOf(this.hovering));
-    if (mesh?.userData.pick === "planet") {
-      mesh.scale.setScalar(this.scaleOf(mesh) * 1.045);
-      this.canvas.style.cursor = "pointer";
-    } else {
-      this.canvas.style.cursor = "grab";
-    }
-    this.hovering = mesh?.userData.pick === "planet" ? mesh : null;
+    if (pick === "planet" && mesh) mesh.scale.setScalar(this.scaleOf(mesh) * 1.045);
+    const label = this.labelFor(mesh);
+    this.canvas.style.cursor = label ? "pointer" : "grab";
+    this.onGlance(label);
+    this.hovering = pick === "planet" && mesh ? mesh : null;
+  }
+
+  private labelFor(mesh: THREE.Mesh | null) {
+    const data = mesh?.userData as PickData | undefined;
+    if (data?.pick === "planet" && data.id) return planetById(data.id).name;
+    if (data?.pick === "earth") return "A faint blue world";
+    if (data?.pick === "signal") return "Unidentified signal";
+    return null;
   }
 
   private scaleOf(mesh: THREE.Mesh) {
@@ -417,7 +469,10 @@ export class UniverseScene {
   private pick(x: number, y: number) {
     const hit = this.cast(x, y);
     const data = hit?.object.userData as PickData | undefined;
-    if (!data?.pick) return;
+    if (!data?.pick) {
+      this.onMiss();
+      return;
+    }
     if (data.pick === "signal") {
       const material = (hit?.object as THREE.Mesh).material;
       if (material instanceof THREE.MeshStandardMaterial && material.opacity < 0.35) return;
@@ -463,7 +518,7 @@ export class UniverseScene {
     if (!this.reduceMotion) this.elapsed += dt;
     for (const body of this.bodies) {
       const angle = body.phase + this.elapsed * body.speed;
-      const wander = body.id === "unknown" ? Math.sin(this.elapsed * 0.35) * 0.85 : 0;
+      const wander = body.id === "unknown" ? Math.sin(this.elapsed * 0.35) * UNKNOWN_WANDER : 0;
       body.pivot.position.set(
         Math.cos(angle) * (body.orbit + wander),
         body.height,
@@ -484,7 +539,7 @@ export class UniverseScene {
 
     if (this.ship) {
       const t = this.elapsed * 0.12;
-      this.ship.position.set(Math.cos(t) * 15, 1.6 + Math.sin(t * 2) * 0.4, Math.sin(t) * 15);
+      this.ship.position.set(Math.cos(t) * this.shipRadius, 1.1 + Math.sin(t * 2) * 0.25, Math.sin(t) * this.shipRadius);
       this.ship.lookAt(0, 1.6, 0);
     }
 

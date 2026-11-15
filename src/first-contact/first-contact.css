@@ -55,7 +55,7 @@
   min-height: 220px;
   margin: 0;
   color: #d7c39a;
-  font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 14px;
   line-height: 1.7;
 }
@@ -79,8 +79,12 @@
   animation: fc-wave 1.1s ease-in-out infinite;
 }
 
-.fc-wave span:nth-child(odd) {
-  animation-delay: -0.4s;
+.fc-wave span:nth-child(3n + 2) {
+  animation-delay: -0.25s;
+}
+
+.fc-wave span:nth-child(3n) {
+  animation-delay: -0.55s;
 }
 
 .fc-note {
@@ -194,6 +198,11 @@
   color: #8f897e;
   font-size: 13px;
   text-align: center;
+  transition: opacity 0.45s ease;
+}
+
+.fc-hint.is-quiet {
+  opacity: 0;
 }
 
 .fc-fallback {
@@ -249,7 +258,8 @@
 @media (prefers-reduced-motion: reduce) {
   .fc-wave span,
   .fc-terminal.is-glitching,
-  .fc-terminal {
+  .fc-terminal,
+  .fc-hint {
     animation: none;
     transition: none;
   }
