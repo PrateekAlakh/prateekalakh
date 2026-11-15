@@ -20,7 +20,12 @@ class FirstContact {
   private readonly scrollY = window.scrollY;
   private scene: UniverseScene | null = null;
   private terminal: ReturnType<typeof runTerminal> | null = null;
+  private replaying = false;
+  private hintTimer = 0;
   private previousFocus: HTMLElement;
+  private readonly hintText = window.matchMedia("(pointer: coarse)").matches
+    ? "Drag to look around. Pinch to move closer. Tap a world."
+    : "Drag to look around. Scroll to move closer. Arrows choose a world.";
 
   constructor(private readonly trigger: HTMLElement) {
     this.previousFocus = trigger;
@@ -48,7 +53,7 @@ class FirstContact {
         <div class="fc-screen"></div>
       </div>
       <div class="fc-slip" hidden aria-live="polite"></div>
-      <p class="fc-hint" hidden>Drag to look around. Scroll or pinch to move closer. Arrows choose a world.</p>
+      <p class="fc-hint" hidden>${this.hintText}</p>
     `;
     document.body.append(this.root);
   }
@@ -115,10 +120,33 @@ class FirstContact {
       this.close();
       return;
     }
+    if (event.key === "Tab") {
+      this.trapFocus(event);
+      return;
+    }
     if (!this.scene) return;
-    if (event.key === "ArrowRight") this.scene.focusNext(1);
-    if (event.key === "ArrowLeft") this.scene.focusNext(-1);
+    if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
+      event.preventDefault();
+      this.scene.focusNext(event.key === "ArrowRight" ? 1 : -1);
+    }
   };
+
+  private trapFocus(event: KeyboardEvent) {
+    const items = [...this.root.querySelectorAll<HTMLElement>("button:not([hidden])")];
+    const first = items[0];
+    const last = items[items.length - 1];
+    if (!first || !last) return;
+    const active = document.activeElement;
+    if (event.shiftKey && (active === first || !this.root.contains(active))) {
+      event.preventDefault();
+      last.focus();
+      return;
+    }
+    if (!event.shiftKey && active === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
 
   private hideTerminal() {
     const terminal = this.root.querySelector<HTMLElement>(".fc-terminal");
@@ -131,7 +159,11 @@ class FirstContact {
 
   private async enterUniverse() {
     const hint = this.root.querySelector<HTMLElement>(".fc-hint");
-    if (hint) hint.hidden = false;
+    if (hint) {
+      hint.hidden = false;
+      hint.textContent = this.hintText;
+      hint.classList.remove("is-quiet");
+    }
     if (!canUseWebGL()) {
       this.showFallback();
       return;
@@ -139,7 +171,38 @@ class FirstContact {
     const canvas = mountCanvas(this.root);
     const { UniverseScene } = await import("./universe");
     if (!openOverlay) return;
-    this.scene = new UniverseScene(canvas, (pick) => this.onPick(pick), this.reduceMotion);
+    this.scene = new UniverseScene(
+      canvas,
+      (pick) => this.onPick(pick),
+      this.reduceMotion,
+      (label) => this.glance(label),
+      () => this.release(),
+    );
+    window.clearTimeout(this.hintTimer);
+    if (!this.reduceMotion) {
+      this.hintTimer = window.setTimeout(() => this.quietHint(), 6500);
+    }
+  }
+
+  private glance(label: string | null) {
+    const hint = this.root.querySelector<HTMLElement>(".fc-hint");
+    if (!hint || hint.hidden) return;
+    hint.textContent = label ?? this.hintText;
+    hint.classList.toggle("is-quiet", !label && hint.classList.contains("is-quiet"));
+    if (label) hint.classList.remove("is-quiet");
+  }
+
+  private quietHint() {
+    const hint = this.root.querySelector<HTMLElement>(".fc-hint");
+    if (!hint || hint.hidden || hint.textContent !== this.hintText) return;
+    hint.classList.add("is-quiet");
+  }
+
+  private release() {
+    const slip = this.root.querySelector<HTMLElement>(".fc-slip");
+    if (!slip || slip.hidden) return;
+    this.scene?.focusPlanet(null);
+    this.hideSlip();
   }
 
   private showFallback() {
@@ -207,43 +270,54 @@ class FirstContact {
     const slip = this.root.querySelector<HTMLElement>(".fc-slip");
     const hint = this.root.querySelector<HTMLElement>(".fc-hint");
     if (slip) slip.hidden = true;
-    if (hint && this.scene) hint.hidden = false;
+    if (hint && this.scene) {
+      hint.hidden = false;
+      hint.textContent = this.hintText;
+    }
   }
 
   private async replay() {
-    this.scene?.dispose();
-    this.scene = null;
-    this.hideSlip();
-    const canvas = this.root.querySelector<HTMLCanvasElement>(".fc-canvas");
-    const fallback = this.root.querySelector<HTMLElement>(".fc-fallback");
-    const hint = this.root.querySelector<HTMLElement>(".fc-hint");
-    const replay = this.root.querySelector<HTMLElement>(".fc-replay");
-    const skip = this.root.querySelector<HTMLElement>(".fc-skip");
-    const shell = this.root.querySelector<HTMLElement>(".fc-terminal");
-    const log = this.root.querySelector<HTMLElement>(".fc-log");
-    const note = this.root.querySelector<HTMLElement>(".fc-note");
-    if (canvas) canvas.hidden = true;
-    if (fallback) fallback.hidden = true;
-    if (hint) hint.hidden = true;
-    if (replay) replay.hidden = true;
-    if (skip) skip.hidden = false;
-    if (!shell || !log || !note) return;
-    shell.hidden = false;
-    shell.classList.remove("is-leaving", "is-glitching");
-    log.replaceChildren();
-    note.hidden = true;
-    this.terminal = runTerminal(log, note, shell, this.reduceMotion);
-    const ending = await this.terminal.finished;
-    this.terminal = null;
-    if (ending === "close" || !openOverlay) return;
-    shell.classList.add("is-leaving");
-    await wait(this.reduceMotion ? 0 : 700);
-    if (!openOverlay) return;
-    this.hideTerminal();
-    await this.enterUniverse();
+    if (this.replaying) return;
+    this.replaying = true;
+    try {
+      window.clearTimeout(this.hintTimer);
+      this.scene?.dispose();
+      this.scene = null;
+      this.hideSlip();
+      const canvas = this.root.querySelector<HTMLCanvasElement>(".fc-canvas");
+      const fallback = this.root.querySelector<HTMLElement>(".fc-fallback");
+      const hint = this.root.querySelector<HTMLElement>(".fc-hint");
+      const replay = this.root.querySelector<HTMLElement>(".fc-replay");
+      const skip = this.root.querySelector<HTMLElement>(".fc-skip");
+      const shell = this.root.querySelector<HTMLElement>(".fc-terminal");
+      const log = this.root.querySelector<HTMLElement>(".fc-log");
+      const note = this.root.querySelector<HTMLElement>(".fc-note");
+      if (canvas) canvas.hidden = true;
+      if (fallback) fallback.hidden = true;
+      if (hint) hint.hidden = true;
+      if (replay) replay.hidden = true;
+      if (skip) skip.hidden = false;
+      if (!shell || !log || !note) return;
+      shell.hidden = false;
+      shell.classList.remove("is-leaving", "is-glitching");
+      log.replaceChildren();
+      note.hidden = true;
+      this.terminal = runTerminal(log, note, shell, this.reduceMotion);
+      const ending = await this.terminal.finished;
+      this.terminal = null;
+      if (ending === "close" || !openOverlay) return;
+      shell.classList.add("is-leaving");
+      await wait(this.reduceMotion ? 0 : 700);
+      if (!openOverlay) return;
+      this.hideTerminal();
+      await this.enterUniverse();
+    } finally {
+      this.replaying = false;
+    }
   }
 
   private close() {
+    window.clearTimeout(this.hintTimer);
     this.terminal?.stop();
     this.scene?.dispose();
     this.scene = null;
