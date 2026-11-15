@@ -1,0 +1,256 @@
+.fc {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: #07070c;
+  color: #f4f0e6;
+  font-family: Outfit, ui-sans-serif, system-ui, sans-serif;
+}
+
+.fc [hidden] {
+  display: none !important;
+}
+
+.fc-canvas,
+.fc-fallback {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.fc-canvas {
+  display: block;
+  touch-action: none;
+  cursor: grab;
+}
+
+.fc-terminal,
+.fc-fallback {
+  display: grid;
+  align-content: end;
+  padding: 72px 24px 36px;
+}
+
+.fc-terminal {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 20%, rgba(255, 138, 98, 0.08), transparent 36%),
+    #07070c;
+  transition: opacity 0.7s ease;
+}
+
+.fc-terminal.is-leaving {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.fc-screen {
+  width: min(720px, 100%);
+  margin: 0 auto;
+}
+
+.fc-log {
+  min-height: 220px;
+  margin: 0;
+  color: #d7c39a;
+  font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.fc-log p {
+  margin: 0;
+}
+
+.fc-wave {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 28px;
+  margin-bottom: 18px;
+}
+
+.fc-wave span {
+  width: 3px;
+  height: 8px;
+  background: #e7c27a;
+  animation: fc-wave 1.1s ease-in-out infinite;
+}
+
+.fc-wave span:nth-child(odd) {
+  animation-delay: -0.4s;
+}
+
+.fc-note {
+  max-width: 36rem;
+  margin: 22px 0 8px;
+}
+
+.fc-note p {
+  margin: 0;
+}
+
+.fc-kicker {
+  margin-bottom: 8px;
+  color: #9dffa8;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.fc-note strong,
+.fc-slip h2 {
+  display: block;
+  margin: 0 0 8px;
+  font-family: Fraunces, Georgia, serif;
+  font-size: clamp(26px, 4vw, 40px);
+  font-style: italic;
+  font-weight: 460;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+
+.fc-slip p,
+.fc-note p + p,
+.fc-fallback p {
+  color: #c9c3b6;
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.fc-close,
+.fc-skip,
+.fc-replay,
+.fc-back,
+.fc-fallback button {
+  border: 1px solid rgba(244, 240, 230, 0.2);
+  border-radius: 999px;
+  background: rgba(7, 7, 6, 0.62);
+  color: #f4f0e6;
+  font: 600 13px Outfit, ui-sans-serif, system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.fc-close,
+.fc-skip,
+.fc-replay {
+  position: absolute;
+  z-index: 2;
+  height: 44px;
+  padding: 0 14px;
+}
+
+.fc-close {
+  top: 16px;
+  right: 16px;
+}
+
+.fc-skip,
+.fc-replay {
+  top: 16px;
+  left: 16px;
+}
+
+.fc-slip {
+  position: absolute;
+  left: 20px;
+  bottom: 64px;
+  z-index: 2;
+  width: min(380px, calc(100% - 40px));
+  padding: 18px 18px 16px;
+  border: 1px solid rgba(244, 240, 230, 0.16);
+  background: rgba(7, 7, 6, 0.72);
+}
+
+.fc-slip h2 {
+  font-size: clamp(28px, 4vw, 36px);
+}
+
+.fc-slip p {
+  margin: 0;
+}
+
+.fc-slip p + p {
+  margin-top: 8px;
+}
+
+.fc-back {
+  height: 40px;
+  margin-top: 14px;
+  padding: 0 14px;
+}
+
+.fc-hint {
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  bottom: 18px;
+  z-index: 2;
+  margin: 0;
+  color: #8f897e;
+  font-size: 13px;
+  text-align: center;
+}
+
+.fc-fallback {
+  align-content: center;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.16) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 70% 40%, rgba(255, 255, 255, 0.2) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 40% 75%, rgba(255, 255, 255, 0.14) 0 1px, transparent 1.5px),
+    #07070c;
+  background-size: 180px 180px, 240px 240px, 200px 200px, auto;
+}
+
+.fc-fallback .fc-screen {
+  display: grid;
+  gap: 12px;
+}
+
+.fc-fallback button {
+  min-height: 64px;
+  padding: 12px 16px;
+  text-align: left;
+}
+
+.fc-fallback strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 16px;
+}
+
+.fc-terminal.is-glitching {
+  animation: fc-glitch 0.65s steps(2, end);
+}
+
+@keyframes fc-wave {
+  50% {
+    height: 26px;
+  }
+}
+
+@keyframes fc-glitch {
+  0%,
+  100% {
+    transform: none;
+  }
+  30% {
+    transform: translateX(-2px);
+  }
+  60% {
+    transform: translateX(2px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fc-wave span,
+  .fc-terminal.is-glitching,
+  .fc-terminal {
+    animation: none;
+    transition: none;
+  }
+}

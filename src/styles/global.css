@@ -779,6 +779,69 @@ h1 em {
   font-size: 13px;
 }
 
+.footer-end {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.signal {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid rgba(244, 240, 230, 0.16);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--dim);
+  cursor: pointer;
+}
+
+.signal svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.signal:hover,
+.signal:focus-visible {
+  color: var(--accent-soft);
+  border-color: rgba(255, 77, 28, 0.5);
+}
+
+.signal-tip {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 10px);
+  width: max-content;
+  max-width: 240px;
+  padding: 8px 10px;
+  border: 1px solid rgba(244, 240, 230, 0.14);
+  border-radius: 10px;
+  background: rgba(7, 7, 6, 0.94);
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.4;
+  text-align: left;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(4px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.signal:hover .signal-tip,
+.signal:focus-visible .signal-tip {
+  opacity: 1;
+  transform: none;
+}
+
 @keyframes pulse {
   70% {
     box-shadow: 0 0 0 8px rgba(255, 77, 28, 0);
