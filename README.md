@@ -1,12 +1,13 @@
-# Prateek Alakh
+# Hey, I'm Prateek 👋
 
-A personal site. A short introduction, a few stories from work, things explored outside of it, and one small experiment called Pop Some Bubbles.
+I enjoy figuring out how things work, solving problems, and making things a little better than I found them.
 
-Built with Astro.
+GitHub is where I build, experiment, learn, and occasionally get lost in interesting rabbit holes.
 
-```sh
-npm install
-npm run dev
-```
+## About this repository
 
-The site runs at `http://localhost:4321`.
+This repository hosts the source code for my personal website — an ongoing project that evolves as I do. It's a space for me to share my journey, projects, interests, and experiences beyond the code.
+
+Feel free to explore the source code or visit the website itself.
+
+[Explore my website ↗](https://prateekalakh.pages.dev/)
