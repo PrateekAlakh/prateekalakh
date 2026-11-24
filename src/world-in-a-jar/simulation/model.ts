@@ -158,7 +158,7 @@ export function serialize(state: WorldState) {
 
 function integrate(state: WorldState, dt: number): WorldState {
   const rain = damp(state.rain, clamp01(state.rainTarget), dt, 1.6);
-  const sunlight = damp(state.sunlight, clamp01(state.sunlightTarget), dt, 0.85);
+  const sunlight = damp(state.sunlight, clamp01(state.sunlightTarget), dt, 6);
   const wind = damp(state.wind, clamp01(state.windTarget), dt, 1.2);
   let timeOfDay = state.timeOfDay + dt / 24;
   let timeBias = state.timeBias;

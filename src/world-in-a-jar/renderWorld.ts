@@ -89,15 +89,17 @@ export function createWorldView(canvas: HTMLCanvasElement, quality: Quality): Wo
     render(state, dt, reduceMotion) {
       clock.elapsed += reduceMotion ? dt * 0.15 : dt;
       const daylight = daylightFactor(state.timeOfDay);
-      const sunLevel = state.sunlight * (0.18 + 0.82 * daylight);
-      hemi.color.set(daylight > 0.35 ? 0xf3ecdf : 0xb7c4d6);
+      const sunLevel = 0.05 + state.sunlight * 0.95;
+      const dayLift = 0.42 + daylight * 0.58;
+      hemi.color.set(daylight > 0.35 ? 0xfff1df : 0xc5d4e8);
       hemi.groundColor.set(daylight > 0.35 ? 0x3a4634 : 0x1a221c);
-      hemi.intensity = 0.55 + sunLevel * 0.4;
-      sun.intensity = 0.25 + sunLevel * 1.7;
-      sun.color.set(daylight > 0.45 ? 0xffe6c8 : 0xc5d4ea);
-      fill.intensity = 0.22 + daylight * 0.2;
-      moon.intensity = (1 - daylight) * 0.42;
-      scene.fog.color.set(daylight > 0.3 ? 0x10110e : 0x0c0e12);
+      hemi.intensity = 0.16 + sunLevel * 0.85 * dayLift;
+      sun.intensity = sunLevel * 3.1 * dayLift;
+      sun.color.set(daylight > 0.45 ? 0xffe2b0 : 0xd7e4f6);
+      fill.intensity = 0.05 + sunLevel * 0.28;
+      moon.intensity = (1 - daylight) * 0.35 * (1.15 - sunLevel * 0.45);
+      renderer.toneMappingExposure = 0.48 + sunLevel * 0.95;
+      scene.fog.color.set(daylight > 0.3 ? 0x141610 : 0x0c0e12);
       scene.background = scene.fog.color;
 
       ground.update(state);

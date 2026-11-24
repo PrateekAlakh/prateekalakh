@@ -130,8 +130,9 @@ export function startWorld(root: HTMLElement) {
   });
 
   sun.addEventListener("input", () => {
-    state = withControls(state, { sunlightTarget: Number(sun.value) });
-    say(live, `Sunlight is ${Math.round(state.sunlightTarget * 100)} percent.`);
+    const sunlightTarget = Number(sun.value);
+    state = { ...withControls(state, { sunlightTarget }), sunlight: sunlightTarget };
+    say(live, `Sunlight is ${Math.round(sunlightTarget * 100)} percent.`);
   });
   wind.addEventListener("input", () => {
     state = withControls(state, { windTarget: Number(wind.value) });
