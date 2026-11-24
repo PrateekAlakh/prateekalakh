@@ -31,9 +31,10 @@ export function startWorld(root: HTMLElement) {
 
   let view: WorldView | null = null;
   try {
-    if (!canvas.getContext("webgl2") && !canvas.getContext("webgl")) throw new Error("no webgl");
+    if (!webGLAvailable()) throw new Error("no webgl");
     view = createWorldView(canvas, chooseQuality());
-  } catch {
+  } catch (error) {
+    console.error(error);
     if (fallback) fallback.hidden = false;
   }
 
@@ -234,4 +235,16 @@ function percent(value: number) {
 
 function say(live: HTMLElement | null, message: string) {
   if (live) live.textContent = message;
+}
+
+function webGLAvailable() {
+  try {
+    const probe = document.createElement("canvas");
+    const context = probe.getContext("webgl2") || probe.getContext("webgl");
+    const gl = context as WebGLRenderingContext | null;
+    gl?.getExtension("WEBGL_lose_context")?.loseContext();
+    return Boolean(context);
+  } catch {
+    return false;
+  }
 }

@@ -646,6 +646,10 @@ function windShader(shader: { uniforms: Record<string, { value: number }>; verte
     );
 }
 
+function branchDirection(yaw: number, pitch: number) {
+  return new THREE.Vector3(Math.sin(pitch) * Math.cos(yaw), Math.cos(pitch), Math.sin(pitch) * Math.sin(yaw)).normalize();
+}
+
 function addLimb(group: THREE.Group, material: THREE.Material, from: THREE.Vector3, to: THREE.Vector3, radius: number, appear: number, quality: Quality) {
   const direction = to.clone().sub(from);
   const length = Math.max(0.01, direction.length());
