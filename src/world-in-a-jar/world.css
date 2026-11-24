@@ -1,0 +1,192 @@
+.jar {
+  position: relative;
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at 50% 42%, rgba(92, 98, 78, 0.18), transparent 42%),
+    #070706;
+  color: #f4f0e6;
+}
+
+.jar-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none;
+  cursor: grab;
+}
+
+.jar-home {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  z-index: 2;
+  color: #c9c3b6;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.jar-intro,
+.jar-fallback {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  z-index: 3;
+  width: min(440px, calc(100% - 40px));
+  padding: 28px 26px 24px;
+  border: 1px solid rgba(244, 240, 230, 0.16);
+  background: rgba(7, 7, 6, 0.72);
+  transform: translate(-50%, -50%);
+}
+
+.jar-intro p,
+.jar-fallback p,
+.jar-panel p {
+  margin: 0;
+  color: #c9c3b6;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.jar-kicker {
+  margin-bottom: 10px;
+  color: #9dffa8;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.jar h1,
+.jar-fallback h2 {
+  margin: 0 0 8px;
+  font-family: Fraunces, Georgia, serif;
+  font-size: clamp(36px, 6vw, 58px);
+  font-style: italic;
+  font-weight: 460;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+
+.jar-intro .jar-line {
+  margin-bottom: 14px;
+  color: #f4f0e6;
+}
+
+.jar-enter,
+.jar-controls button,
+.jar-panel button {
+  border: 1px solid rgba(244, 240, 230, 0.2);
+  border-radius: 999px;
+  background: rgba(7, 7, 6, 0.72);
+  color: #f4f0e6;
+  font: 600 13px Outfit, ui-sans-serif, system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.jar-enter {
+  height: 44px;
+  margin-top: 18px;
+  padding: 0 16px;
+}
+
+.jar-enter:hover,
+.jar-controls button:hover,
+.jar-controls button[aria-pressed="true"] {
+  border-color: rgba(255, 77, 28, 0.55);
+  color: #ff8a62;
+}
+
+.jar-controls {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  width: min(860px, calc(100% - 24px));
+  transform: translateX(-50%);
+}
+
+.jar-controls button,
+.jar-controls label {
+  height: 42px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.jar-controls label {
+  border: 1px solid rgba(244, 240, 230, 0.2);
+  border-radius: 999px;
+  background: rgba(7, 7, 6, 0.72);
+  color: #c9c3b6;
+  font-size: 13px;
+}
+
+.jar-controls input {
+  width: 92px;
+  accent-color: #ff4d1c;
+}
+
+.jar-panel {
+  position: absolute;
+  top: 64px;
+  right: 16px;
+  z-index: 2;
+  width: min(280px, calc(100% - 32px));
+  padding: 16px 16px 14px;
+  border: 1px solid rgba(244, 240, 230, 0.14);
+  background: rgba(7, 7, 6, 0.78);
+}
+
+.jar-panel dl {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 7px 16px;
+  margin: 12px 0;
+}
+
+.jar-panel dt {
+  color: #8f897e;
+  font-size: 13px;
+}
+
+.jar-panel dd {
+  margin: 0;
+  font-size: 13px;
+  text-align: right;
+}
+
+.jar-live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+@media (max-width: 700px) {
+  .jar-controls input {
+    width: 64px;
+  }
+
+  .jar-panel {
+    top: auto;
+    right: 12px;
+    bottom: 132px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jar-canvas {
+    cursor: default;
+  }
+}

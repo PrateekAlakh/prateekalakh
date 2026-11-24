@@ -1,0 +1,69 @@
+---
+import "../../styles/global.css";
+import "../../world-in-a-jar/world.css";
+
+const title = "World in a Jar";
+const description = "A little world, quietly finding its own way. A glass terrarium you can give light, rain, and time.";
+---
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#070706" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <title>{title} — Prateek Alakh</title>
+  </head>
+  <body>
+    <div class="jar" id="world-jar">
+      <a class="jar-home" href="/">Prateek Alakh</a>
+      <canvas class="jar-canvas" aria-hidden="true"></canvas>
+      <div class="jar-intro">
+        <p class="jar-kicker">A living terrarium</p>
+        <h1>World in a Jar</h1>
+        <p class="jar-line">A little world, quietly finding its own way.</p>
+        <p>Give it light. Let it rain. Watch what grows.</p>
+        <button class="jar-enter" type="button" data-jar="enter">Enter the world</button>
+      </div>
+      <div class="jar-fallback" hidden>
+        <h2>The glass couldn't open.</h2>
+        <p>This browser can't start the 3D world. The readings still follow the same rain, light, and growth.</p>
+      </div>
+      <aside class="jar-panel" id="jar-panel" hidden>
+        <p class="jar-kicker">The jar</p>
+        <dl>
+          <dt>Age</dt>
+          <dd data-read="age">8 hours</dd>
+          <dt>Soil moisture</dt>
+          <dd data-read="moisture">56%</dd>
+          <dt>Humidity</dt>
+          <dd data-read="humidity">48%</dd>
+          <dt>Sunlight</dt>
+          <dd data-read="sun">62%</dd>
+          <dt>Temperature</dt>
+          <dd data-read="temperature">23°C</dd>
+          <dt>Ecosystem</dt>
+          <dd data-read="health">Settling</dd>
+        </dl>
+        <p data-read="notes">Rain feeds the soil. Light helps the tree. Away, the world settles rather than failing.</p>
+      </aside>
+      <div class="jar-controls">
+        <button type="button" data-jar="rain" aria-pressed="false">Let it rain</button>
+        <label>Sunlight <input data-jar="sun" type="range" min="0.15" max="1" step="0.01" value="0.62" aria-valuemin="15" aria-valuemax="100" /></label>
+        <label>Wind <input data-jar="wind" type="range" min="0" max="0.8" step="0.01" value="0.12" /></label>
+        <button type="button" data-jar="day">Bring the night</button>
+        <button type="button" data-jar="view">Reset view</button>
+        <button type="button" data-jar="info" aria-expanded="false" aria-controls="jar-panel">Readings</button>
+        <button type="button" data-jar="reset">Start again</button>
+      </div>
+      <p class="jar-live" aria-live="polite"></p>
+    </div>
+    <script>
+      const root = document.querySelector<HTMLElement>("#world-jar");
+      if (root) {
+        void import("../../world-in-a-jar/experience").then(({ startWorld }) => startWorld(root));
+      }
+    </script>
+  </body>
+</html>
