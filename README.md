@@ -1,16 +1,13 @@
-# Prateek Alakh
+# Hey, I'm Prateek 👋
 
-Curiosity takes me places. I enjoy understanding how things work, solving meaningful problems, and turning ideas into reality.
+I enjoy figuring out how things work, solving problems, and making things a little better than I found them.
 
-This site is a small window into that. A short look at how I see things, work I've done, and the trails and stories I keep coming back to.
+GitHub is where I build, experiment, learn, and occasionally get lost in interesting rabbit holes.
 
-[prateekalakh.pages.dev](https://prateekalakh.pages.dev/)
+## About this repository
 
-Built with Astro.
+This repository hosts the source code for my personal website — an ongoing project that evolves as I do. It's a space for me to share my journey, projects, interests, and experiences beyond the code.
 
-```sh
-npm install
-npm run dev
-```
+Feel free to explore the source code or visit the website itself.
 
-The site runs locally at `http://localhost:4321`.
+[Explore my website ↗](https://prateekalakh.pages.dev/)
