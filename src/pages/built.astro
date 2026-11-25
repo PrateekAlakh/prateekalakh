@@ -26,6 +26,14 @@ const work = [
 
 const personal = [
   {
+    title: "The Butterfly Effect",
+    copy: "An interactive narrative where ordinary decisions lead to extraordinary consequences. Explore interconnected timelines, uncover hidden truths and discover how differently your story could unfold.",
+    href: "/butterfly-effect",
+    cue: "Begin your story",
+    about: "/butterfly-effect#about",
+    tags: "Interactive storytelling · Narrative engine · Branching timelines · Client-side experience",
+  },
+  {
     title: "Pop Some Bubbles",
     copy: "An interactive little experiment that lets bubbles take over your screen, without taking over your website.",
     href: "/built/bubbles",
@@ -75,11 +83,23 @@ const personal = [
     {
       personal.map((item) => (
         <article class="story">
-          <a class="story-card" href={item.href}>
-            <h3>{item.title}</h3>
-            <p>{item.copy}</p>
-            <span class="story-more">{item.cue ?? "Read the story"}</span>
-          </a>
+          {item.about ? (
+            <div class="story-card">
+              <h3>{item.title}</h3>
+              <p>{item.copy}</p>
+              <p class="story-tags">{item.tags}</p>
+              <div class="story-actions">
+                <a class="story-more" href={item.href}>{item.cue}</a>
+                <a class="story-more" href={item.about}>About the experience</a>
+              </div>
+            </div>
+          ) : (
+            <a class="story-card" href={item.href}>
+              <h3>{item.title}</h3>
+              <p>{item.copy}</p>
+              <span class="story-more">{item.cue ?? "Read the story"}</span>
+            </a>
+          )}
         </article>
       ))
     }
