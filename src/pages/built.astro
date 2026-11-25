@@ -29,6 +29,13 @@ const personal = [
     title: "Pop Some Bubbles",
     copy: "An interactive little experiment that lets bubbles take over your screen, without taking over your website.",
     href: "/built/bubbles",
+    cue: "Read the story",
+  },
+  {
+    title: "The Curiosity Machine",
+    copy: "One question at a time. Surprising facts, odd choices, and a few puzzles, whenever you feel like wandering.",
+    href: "/curiosity",
+    cue: "Surprise me",
   },
 ];
 ---
@@ -71,7 +78,7 @@ const personal = [
           <a class="story-card" href={item.href}>
             <h3>{item.title}</h3>
             <p>{item.copy}</p>
-            <span class="story-more">Read the story</span>
+            <span class="story-more">{item.cue ?? "Read the story"}</span>
           </a>
         </article>
       ))
