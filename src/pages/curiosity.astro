@@ -1,0 +1,26 @@
+---
+import Base from "../layouts/Base.astro";
+import "../curiosity/curiosity.css";
+---
+
+<Base
+  title="Curiosity"
+  description="The Curiosity Machine. Surprising facts, impossible choices, and questions worth a few quiet minutes."
+>
+  <header class="page-hero">
+    <p class="eyebrow">The Curiosity Machine</p>
+    <h1>One question at a time.</h1>
+    <div class="lede">
+      <p>The world is full of interesting things. Let's discover a few.</p>
+    </div>
+  </header>
+
+  <div class="cm-page" id="curiosity-app"></div>
+
+  <script>
+    import { startCuriosity } from "../curiosity/machine";
+
+    const root = document.querySelector<HTMLElement>("#curiosity-app");
+    if (root) startCuriosity(root);
+  </script>
+</Base>

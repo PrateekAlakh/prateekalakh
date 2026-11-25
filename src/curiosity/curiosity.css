@@ -1,0 +1,256 @@
+.cm-page {
+  padding-bottom: 72px;
+}
+
+.cm-page .page-hero h1 {
+  max-width: 12ch;
+}
+
+.cm-filters {
+  display: flex;
+  gap: 8px;
+  margin: 8px 0 22px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+
+.cm-filters::-webkit-scrollbar {
+  display: none;
+}
+
+.cm-chip,
+.cm-quiet,
+.cm-text,
+.cm-choice,
+.cm-history button {
+  font: inherit;
+  cursor: pointer;
+}
+
+.cm-chip {
+  flex: none;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--dim);
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.cm-chip[aria-pressed="true"] {
+  border-color: rgba(255, 77, 28, 0.7);
+  background: rgba(255, 77, 28, 0.12);
+  color: var(--ink);
+}
+
+.cm-card {
+  max-width: 44rem;
+  padding: 8px 0 12px;
+}
+
+.cm-card h2 {
+  max-width: 22em;
+  margin: 0;
+  color: #f7f1e4;
+  font-family: Fraunces, Georgia, serif;
+  font-style: italic;
+  font-weight: 460;
+  font-size: clamp(26px, 3vw, 40px);
+  letter-spacing: -0.03em;
+  line-height: 1.28;
+}
+
+.cm-choices {
+  display: grid;
+  gap: 10px;
+  margin-top: 28px;
+}
+
+.cm-choice {
+  text-align: left;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(244, 240, 230, 0.03);
+  color: #ebe6da;
+  padding: 15px 18px;
+  font-size: 16px;
+  font-weight: 480;
+  line-height: 1.5;
+}
+
+.cm-choice:hover:not(:disabled) {
+  border-color: rgba(255, 138, 98, 0.7);
+}
+
+.cm-choice:disabled {
+  cursor: default;
+}
+
+.cm-choice.is-correct {
+  border-color: rgba(255, 176, 92, 0.9);
+  background: rgba(255, 176, 92, 0.08);
+}
+
+.cm-choice.is-selected.is-miss {
+  border-color: rgba(244, 240, 230, 0.28);
+}
+
+.cm-reveal {
+  margin-top: 26px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.cm-reveal p,
+.cm-meta p,
+.cm-history p,
+.cm-marks li {
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.65;
+}
+
+.cm-note {
+  color: var(--accent-soft);
+  font-family: Fraunces, Georgia, serif;
+  font-style: italic;
+}
+
+.cm-sources a {
+  color: var(--accent-soft);
+}
+
+.cm-actions,
+.cm-meta,
+.cm-dialog-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 22px;
+}
+
+.cm-actions {
+  margin-top: 26px;
+}
+
+.cm-quiet,
+.cm-text {
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  padding: 0;
+  font-size: 15px;
+  font-weight: 650;
+}
+
+.cm-quiet[aria-pressed="true"] {
+  color: var(--ink);
+}
+
+.cm-meta {
+  justify-content: space-between;
+  max-width: 44rem;
+  margin-top: 28px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.cm-meta p {
+  margin: 0;
+}
+
+.cm-history,
+.cm-marks {
+  max-width: 44rem;
+  margin-top: 22px;
+}
+
+.cm-history summary,
+.cm-marks summary {
+  cursor: pointer;
+  color: var(--ink);
+  font-weight: 650;
+}
+
+.cm-history-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.cm-history button {
+  text-align: left;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+  padding: 10px 0;
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.cm-history button[data-saved="true"]::before {
+  content: "Saved · ";
+  color: var(--accent-soft);
+}
+
+.cm-marks ul {
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cm-marks li + li {
+  margin-top: 8px;
+}
+
+.cm-marks .is-waiting {
+  color: var(--dim);
+}
+
+.cm-live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+.cm-dialog {
+  width: min(440px, calc(100% - 32px));
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: #120f0c;
+  color: var(--ink);
+  padding: 24px;
+}
+
+.cm-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.62);
+}
+
+.cm-dialog h2 {
+  margin: 0 0 10px;
+  font-size: 28px;
+  letter-spacing: -0.04em;
+}
+
+.cm-dialog p {
+  margin: 0 0 22px;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+@media (max-width: 700px) {
+  .cm-card h2 {
+    font-size: 28px;
+    line-height: 1.32;
+  }
+
+  .cm-meta {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
