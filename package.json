@@ -10,7 +10,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "test": "node --experimental-strip-types --test src/curiosity/engine.test.ts"
+    "test": "node --experimental-strip-types --test src/curiosity/engine.test.ts src/butterfly/engine.test.ts"
   },
   "dependencies": {
     "astro": "^7.4.11",
