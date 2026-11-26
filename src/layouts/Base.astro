@@ -4,12 +4,24 @@ import "../styles/global.css";
 interface Props {
   title: string;
   description: string;
+  shareImage?: string;
+  shareImageAlt?: string;
+  ogType?: "website" | "article";
 }
 
-const { title, description } = Astro.props;
+const {
+  title,
+  description,
+  shareImage = "/social/portfolio.png",
+  shareImageAlt = "Prateek Alakh — Curiosity takes me places.",
+  ogType = "website",
+} = Astro.props;
 const pageTitle = title === "Prateek Alakh" ? title : `${title} — Prateek Alakh`;
 const year = new Date().getFullYear();
 const current = Astro.url.pathname.replace(/\/$/, "") || "/";
+
+const canonical = new URL(current, Astro.site ?? Astro.url);
+const imageUrl = new URL(shareImage, canonical);
 
 const nav = [
   { href: "/story", label: "My Story" },
@@ -26,11 +38,21 @@ const nav = [
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonical.href} />
+    <meta property="og:site_name" content="Prateek Alakh" />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={canonical.href} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={imageUrl.href} />
+    <meta property="og:image:alt" content={shareImageAlt} />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="theme-color" content="#070706" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <title>{pageTitle}</title>
   </head>
   <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
     <div class="atmosphere" aria-hidden="true">
       <div class="orb orb-a"></div>
       <div class="orb orb-b"></div>
@@ -56,7 +78,7 @@ const nav = [
       </div>
     </header>
 
-    <main>
+    <main id="main-content" tabindex="-1">
       <div class="wrap">
         <slot />
       </div>
@@ -78,6 +100,7 @@ const nav = [
           </button>
         </span>
       </div>
+      <p class="signal-error wrap" role="status"></p>
     </footer>
 
     <script>
@@ -98,9 +121,18 @@ const nav = [
       }
 
       const signal = document.querySelector<HTMLButtonElement>("#first-contact");
+      const signalError = document.querySelector<HTMLElement>(".signal-error");
+
       signal?.addEventListener("click", async () => {
-        const firstContact = await import("../first-contact/overlay");
-        firstContact.openFirstContact(signal);
+        if (signalError) signalError.textContent = "";
+        try {
+          const firstContact = await import("../first-contact/overlay");
+          firstContact.openFirstContact(signal);
+        } catch {
+          if (signalError) {
+            signalError.textContent = "Could not open First Contact. Try again after reloading the page.";
+          }
+        }
       });
     </script>
   </body>

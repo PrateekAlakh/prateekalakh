@@ -248,3 +248,26 @@
     transition: none;
   }
 }
+
+.be .be-skip {
+  margin: 0 0 16px;
+  padding: 6px 12px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.be .be-awaiting-prose {
+  display: none;
+}
+
+.be-revealing {
+  display: grid;
+}
+
+.be-revealing > span {
+  grid-area: 1 / 1;
+}
+
+.be-full-text {
+  opacity: 0;
+}

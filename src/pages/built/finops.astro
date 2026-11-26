@@ -1,5 +1,6 @@
 ---
 import Base from "../../layouts/Base.astro";
+import CaseStudyHero from "../../components/CaseStudyHero.astro";
 
 const pipeline = [
   "GCP Billing Export",
@@ -42,22 +43,16 @@ const contribution = [
 <Base
   title="FinOps and Cloud Cost Optimization Platform"
   description="Building visibility, accountability and smarter decision-making into enterprise cloud spending."
+  shareImage="/social/finops.png"
+  shareImageAlt="FinOps and Cloud Cost Optimization Platform — Prateek Alakh"
+  ogType="article"
 >
-  <header class="page-hero">
-    <p class="eyebrow"><a href="/built">Things I've Built</a></p>
-    <h1 class="wide-title">
-      FinOps and Cloud<br />
-      Cost Optimization Platform
-    </h1>
-    <div class="lede">
-      <p>
-        Building visibility, accountability and smarter decision-making into enterprise cloud spending.
-      </p>
-      <p>
-        The goal was not simply to reduce cloud spending. It was to establish a more thoughtful and sustainable approach to managing cloud resources across the organization.
-      </p>
-    </div>
-  </header>
+  <CaseStudyHero
+    title="FinOps and Cloud Cost Optimization Platform"
+    summary="Building visibility, accountability and smarter decision-making into enterprise cloud spending."
+    role="I helped shape the architecture on a three-engineer team and led much of the backend implementation."
+    outcome="Teams gained clearer visibility into cloud spending and ways to estimate costs earlier and identify opportunities to reduce waste."
+  />
 
   <figure class="flow">
     <figcaption class="kicker flow-label">How the cost data moves</figcaption>

@@ -1,5 +1,6 @@
 ---
 import Base from "../../layouts/Base.astro";
+import CaseStudyHero from "../../components/CaseStudyHero.astro";
 
 const stages = [
   {
@@ -72,22 +73,16 @@ const operations = [
 <Base
   title="Multi-Cloud Asset Management Platform"
   description="A platform for discovering, enriching and synchronizing cloud infrastructure data across multiple providers."
+  shareImage="/social/cloud-assets.png"
+  shareImageAlt="Multi-Cloud Asset Management Platform — Prateek Alakh"
+  ogType="article"
 >
-  <header class="page-hero">
-    <p class="eyebrow"><a href="/built">Things I've Built</a></p>
-    <h1 class="wide-title">
-      Multi-Cloud Asset<br />
-      Management Platform
-    </h1>
-    <div class="lede">
-      <p>
-        A platform for discovering, enriching and synchronizing cloud infrastructure data across multiple providers.
-      </p>
-      <p>
-        The goal was to bring cloud infrastructure information from different environments and internal systems into one consistent view, making it easier to understand what existed, who owned it and how it related to the wider organization.
-      </p>
-    </div>
-  </header>
+  <CaseStudyHero
+    title="Multi-Cloud Asset Management Platform"
+    summary="A platform for discovering, enriching and synchronizing cloud infrastructure data across multiple providers."
+    role="I led the initial solution from technical evaluation and proof of concept through architecture, development, and deployment."
+    outcome="The platform automated inventory synchronization into ServiceNow CMDB across GCP, Azure, OCI, and AWS."
+  />
 
   <figure class="flow">
     <figcaption class="kicker flow-label">How it fits together</figcaption>

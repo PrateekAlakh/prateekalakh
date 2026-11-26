@@ -1,0 +1,42 @@
+---
+import Base from "../../layouts/Base.astro";
+---
+
+<Base
+  title="What a CMDB dry run should show you"
+  description="How to review proposed cloud inventory changes before writing them to ServiceNow."
+  ogType="article"
+>
+  <article>
+    <header class="page-hero">
+      <p class="eyebrow"><a href="/notes">Notes</a></p>
+      <h1 class="wide-title">What a CMDB dry run should show you</h1>
+      <div class="lede">
+        <p>A cloud inventory sync can succeed technically and still produce records that are hard to trust. A dry run makes the proposed changes visible while there’s still time to correct the mapping.</p>
+      </div>
+    </header>
+
+    <div class="chapters section">
+      <section>
+        <h2>Review the proposed changes</h2>
+        <div class="prose">
+          <p>In the <a href="/built/cloud-assets">multi-cloud asset management project</a>, we collected and enriched cloud data, mapped it to existing ServiceNow classes and relationships, and used dry runs before synchronization. The review mattered because a cloud resource could have a different set of fields and relationships from the record it would become in the CMDB.</p>
+          <p>A review should tell you which records would be created or updated, which relationships would change, and which resources couldn’t be matched. A count helps you spot a surprise. A sample of the actual changes helps you explain it.</p>
+        </div>
+      </section>
+
+      <section>
+        <h2>Check what the sync knows about ownership</h2>
+        <div class="prose">
+          <p>When a project has no confirmed owner in the source data, review how the mapping handles that gap. An existing ownership value deserves a closer look before the sync replaces it. The same goes for business classifications and relationships used downstream in governance and budgeting.</p>
+          <p>Start with one service and a few records you understand. Compare the proposed fields and relationships with what the team expects to see in ServiceNow. Once that sample makes sense, review the changes at a wider scope.</p>
+        </div>
+      </section>
+    </div>
+  </article>
+
+  <a class="pager" href="/notes">
+    <small>Back</small>
+    <span>Notes</span>
+  </a>
+</Base>
