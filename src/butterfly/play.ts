@@ -1,5 +1,4 @@
 import {
-  STORAGE_KEY,
   availableChoices,
   branchFromCheckpoint,
   choose,
@@ -11,9 +10,11 @@ import {
   startRun,
   storyMap,
 } from "./engine.ts";
-import { story } from "./story/index.ts";
+import { morning as story } from "./story/morning.ts";
+import { revealProse } from "./reveal.ts";
 import type { NarrativeNode, Run, RunSnapshot, SaveFile } from "./types.ts";
 
+const storageKey = "butterfly-effect-712-v1";
 const nodes = storyMap(story);
 
 export function mount(root: HTMLElement) {
@@ -22,6 +23,8 @@ export function mount(root: HTMLElement) {
   let panel: "journal" | "map" | null = null;
   let screen: "gate" | "play" = "gate";
   let notice = "";
+  let lastScene: string | undefined;
+  let stopReveal: (() => void) | undefined;
 
   if (save.active?.endingId) settle(save.active);
 
@@ -31,7 +34,7 @@ export function mount(root: HTMLElement) {
 
   function readSave(): SaveFile {
     try {
-      return parseSave(localStorage.getItem(STORAGE_KEY), story);
+      return parseSave(localStorage.getItem(storageKey), story);
     } catch {
       memoryOnly = true;
       return emptySave();
@@ -40,7 +43,7 @@ export function mount(root: HTMLElement) {
 
   function persist() {
     try {
-      localStorage.setItem(STORAGE_KEY, serializeSave(save));
+      localStorage.setItem(storageKey, serializeSave(save));
       if (!memoryOnly) notice = "Saved on this device.";
     } catch {
       memoryOnly = true;
@@ -59,11 +62,16 @@ export function mount(root: HTMLElement) {
   }
 
   function render() {
+    stopReveal?.();
+    stopReveal = undefined;
+    const scene = screen === "play" ? save.active?.nodeId : undefined;
+    const animate = scene !== lastScene && !panel;
+    lastScene = scene;
     shell.dataset.size = save.preferences.size;
     shell.replaceChildren();
     if (screen === "gate" || !save.active) renderGate();
-    else if (save.active.endingId) renderEnding(save.active);
-    else renderStory(save.active);
+    else if (save.active.endingId) renderEnding(save.active, animate);
+    else renderStory(save.active, animate);
   }
 
   function renderGate() {
@@ -73,7 +81,7 @@ export function mount(root: HTMLElement) {
     const caution = el(
       "p",
       "be-note",
-      "This story includes psychological tension, grief, and choices you may regret. Nothing is timed. You can leave whenever you want. What you choose stays on this device.",
+      "Your progress stays on this device.",
     );
     const name = document.createElement("label");
     name.className = "be-name";
@@ -108,7 +116,7 @@ export function mount(root: HTMLElement) {
         }),
       );
     }
-    const begin = button(save.active || save.discoveries.endings.length ? "Start a new timeline" : "Begin your story", () => {
+    const begin = button(save.active || save.discoveries.endings.length ? "Start another morning" : "Begin your story", () => {
       if (save.active && !save.active.endingId && !window.confirm("Start a new morning? This unfinished one will be replaced. Finished mornings stay.")) return;
       save.preferences.name = input.value.trim().slice(0, 40);
       save.active = startRun(story);
@@ -122,7 +130,7 @@ export function mount(root: HTMLElement) {
 
     if (save.discoveries.endings.length) {
       actions.append(
-        button("Explore discovered timelines", () => {
+        button("Explore discovered paths", () => {
           panel = "map";
           render();
         }),
@@ -146,7 +154,7 @@ export function mount(root: HTMLElement) {
     if (memoryOnly) shell.append(el("p", "be-status", "Progress can’t be retained in this browser."));
   }
 
-  function renderStory(run: Run) {
+  function renderStory(run: Run, animate: boolean) {
     const node = nodes.get(run.nodeId);
     if (!node) {
       save.active = null;
@@ -170,7 +178,6 @@ export function mount(root: HTMLElement) {
 
     const prose = document.createElement("div");
     prose.className = "be-prose";
-    prose.setAttribute("aria-live", "polite");
     for (const paragraph of node.body) prose.append(el("p", "", paragraph));
     shell.append(prose);
 
@@ -206,11 +213,12 @@ export function mount(root: HTMLElement) {
       choices.append(choiceButton);
     }
     shell.append(choices, statusLine());
+    if (animate) stopReveal = revealProse(prose, choices);
     if (panel) renderPanel(node);
     else focusNow();
   }
 
-  function renderEnding(run: Run) {
+  function renderEnding(run: Run, animate: boolean) {
     const node = nodes.get(run.nodeId);
     const ending = story.endings.find((item) => item.id === run.endingId);
     shell.append(renderTools(false));
@@ -223,30 +231,33 @@ export function mount(root: HTMLElement) {
     prose.className = "be-prose";
     for (const paragraph of node?.body ?? []) prose.append(el("p", "", paragraph));
     shell.append(prose);
+    const afterProse = document.createElement("div");
     const reflections = (node?.reflections ?? []).filter((item) => meets(item.when, run, save.discoveries));
     if (reflections.length) {
       const list = document.createElement("ul");
       list.className = "be-reflect";
       for (const item of reflections) list.append(el("li", "", item.text));
-      shell.append(el("p", "be-kicker", "What stayed with you"), list);
+      afterProse.append(el("p", "be-kicker", "What stayed with you"), list);
     }
-    shell.append(el("p", "be-note", `${save.discoveries.endings.length} ending${save.discoveries.endings.length === 1 ? "" : "s"} discovered.`));
+    afterProse.append(el("p", "be-note", `${save.discoveries.endings.length} ending${save.discoveries.endings.length === 1 ? "" : "s"} discovered.`));
     const actions = document.createElement("div");
     actions.className = "be-actions";
     actions.append(
-      button("Begin another timeline", () => {
+      button("Begin another morning", () => {
         save.active = startRun(story);
         screen = "play";
         panel = null;
         persist();
         render();
       }),
-      button("Explore the timeline map", () => {
+      button("Explore the story map", () => {
         panel = "map";
         render();
       }),
     );
-    shell.append(actions, statusLine());
+    afterProse.append(actions, statusLine());
+    shell.append(afterProse);
+    if (animate) stopReveal = revealProse(prose, afterProse);
     if (panel) renderPanel(node);
     else focusNow();
   }
@@ -280,8 +291,8 @@ export function mount(root: HTMLElement) {
   }
 
   function renderMap(panelRoot: HTMLElement) {
-    panelRoot.append(el("h2", "be-chapter", "Timelines"));
-    panelRoot.append(el("p", "be-note", "Each morning you finish stays here. A return starts a branch. It does not erase the one you lived."));
+    panelRoot.append(el("h2", "be-chapter", "Story map"));
+    panelRoot.append(el("p", "be-note", "Your finished mornings stay here. Return to any discovered checkpoint to try another choice."));
     const list = document.createElement("ol");
     list.className = "be-map";
     for (const chapter of story.chapters) {
@@ -361,7 +372,7 @@ export function mount(root: HTMLElement) {
       );
       if (save.discoveries.endings.length || save.active.endingId) {
         bar.append(
-          button("Timelines", () => {
+          button("Story map", () => {
             panel = panel === "map" ? null : "map";
             render();
           }),

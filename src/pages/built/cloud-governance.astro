@@ -1,5 +1,6 @@
 ---
 import Base from "../../layouts/Base.astro";
+import CaseStudyHero from "../../components/CaseStudyHero.astro";
 
 const collectors = [
   {
@@ -39,22 +40,16 @@ const contribution = [
 <Base
   title="Cloud Governance Platform Engineering"
   description="Improving the observability, reliability and efficiency of enterprise cloud governance workflows."
+  shareImage="/social/cloud-governance.png"
+  shareImageAlt="Cloud Governance Platform Engineering — Prateek Alakh"
+  ogType="article"
 >
-  <header class="page-hero">
-    <p class="eyebrow"><a href="/built">Things I've Built</a></p>
-    <h1 class="wide-title">
-      Cloud Governance<br />
-      Platform Engineering
-    </h1>
-    <div class="lede">
-      <p>
-        Improving the observability, reliability and efficiency of enterprise cloud governance workflows.
-      </p>
-      <p>
-        The goal was to make the governance platform more observable, reliable and efficient for the teams depending on it.
-      </p>
-    </div>
-  </header>
+  <CaseStudyHero
+    title="Cloud Governance Platform Engineering"
+    summary="Improving the observability, reliability and efficiency of enterprise cloud governance workflows."
+    role="I designed and built the monitoring application and helped introduce Merge Trains."
+    outcome="Teams gained centralized dashboards and alerts for CI/CD activity and spent less effort rebasing and revalidating infrastructure changes."
+  />
 
   <figure class="flow">
     <figcaption class="kicker flow-label">How it fits together</figcaption>

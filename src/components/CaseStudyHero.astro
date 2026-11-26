@@ -1,0 +1,20 @@
+---
+interface Props {
+  title: string;
+  summary: string;
+  role: string;
+  outcome: string;
+}
+
+const { title, summary, role, outcome } = Astro.props;
+---
+
+<header class="page-hero">
+  <p class="eyebrow"><a href="/built">Things I've Built</a></p>
+  <h1 class="wide-title">{title}</h1>
+  <div class="lede">
+    <p>{summary}</p>
+    <p><strong>My role</strong> — {role}</p>
+    <p><strong>Outcome</strong> — {outcome}</p>
+  </div>
+</header>

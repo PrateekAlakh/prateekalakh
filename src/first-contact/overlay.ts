@@ -81,11 +81,11 @@ class FirstContact {
     this.terminal = runTerminal(log, note, shell, this.reduceMotion);
     const ending = await this.terminal.finished;
     this.terminal = null;
-    if (ending === "close" || !openOverlay) return;
+    if (ending === "close" || openOverlay !== this) return;
     rememberSeen();
     shell.classList.add("is-leaving");
     await wait(this.reduceMotion ? 0 : 700);
-    if (!openOverlay) return;
+    if (openOverlay !== this) return;
     this.hideTerminal();
     await this.enterUniverse();
   }
@@ -153,8 +153,6 @@ class FirstContact {
     const skip = this.root.querySelector<HTMLElement>(".fc-skip");
     if (terminal) terminal.hidden = true;
     if (skip) skip.hidden = true;
-    const replay = this.root.querySelector<HTMLElement>(".fc-replay");
-    if (replay) replay.hidden = false;
   }
 
   private async enterUniverse() {
@@ -164,20 +162,30 @@ class FirstContact {
       hint.textContent = this.hintText;
       hint.classList.remove("is-quiet");
     }
-    if (!canUseWebGL()) {
-      this.showFallback();
+    const replay = this.root.querySelector<HTMLElement>(".fc-replay");
+    let canvas: HTMLCanvasElement | undefined;
+    try {
+      if (!canUseWebGL()) {
+        this.showFallback();
+        return;
+      }
+      const { UniverseScene } = await import("./universe");
+      if (openOverlay !== this) return;
+      canvas = mountCanvas(this.root);
+      this.scene = new UniverseScene(
+        canvas,
+        (pick) => this.onPick(pick),
+        this.reduceMotion,
+        (label) => this.glance(label),
+        () => this.release(),
+      );
+    } catch {
+      canvas?.remove();
+      if (openOverlay === this) this.showFallback();
       return;
+    } finally {
+      if (replay && openOverlay === this) replay.hidden = false;
     }
-    const canvas = mountCanvas(this.root);
-    const { UniverseScene } = await import("./universe");
-    if (!openOverlay) return;
-    this.scene = new UniverseScene(
-      canvas,
-      (pick) => this.onPick(pick),
-      this.reduceMotion,
-      (label) => this.glance(label),
-      () => this.release(),
-    );
     window.clearTimeout(this.hintTimer);
     if (!this.reduceMotion) {
       this.hintTimer = window.setTimeout(() => this.quietHint(), 6500);
@@ -225,6 +233,8 @@ class FirstContact {
     earth.innerHTML = "<strong>A faint blue world</strong><span>Someone left a signal pointing the other way.</span>";
     screen.append(earth);
     fallback.hidden = false;
+    const hint = this.root.querySelector<HTMLElement>(".fc-hint");
+    if (hint) hint.textContent = "Choose a world to read its transmission.";
   }
 
   private onPick(pick: UniversePick) {
@@ -305,10 +315,10 @@ class FirstContact {
       this.terminal = runTerminal(log, note, shell, this.reduceMotion);
       const ending = await this.terminal.finished;
       this.terminal = null;
-      if (ending === "close" || !openOverlay) return;
+      if (ending === "close" || openOverlay !== this) return;
       shell.classList.add("is-leaving");
       await wait(this.reduceMotion ? 0 : 700);
-      if (!openOverlay) return;
+      if (openOverlay !== this) return;
       this.hideTerminal();
       await this.enterUniverse();
     } finally {

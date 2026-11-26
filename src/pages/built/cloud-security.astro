@@ -1,5 +1,6 @@
 ---
 import Base from "../../layouts/Base.astro";
+import CaseStudyHero from "../../components/CaseStudyHero.astro";
 
 const paths = [
   {
@@ -49,22 +50,16 @@ const contribution = [
 <Base
   title="Cloud Security Intelligence and Remediation Platform"
   description="A multi-cloud platform connecting security findings with resource ownership, operational visibility and automated remediation."
+  shareImage="/social/cloud-security.png"
+  shareImageAlt="Cloud Security Intelligence and Remediation Platform — Prateek Alakh"
+  ogType="article"
 >
-  <header class="page-hero">
-    <p class="eyebrow"><a href="/built">Things I've Built</a></p>
-    <h1 class="wide-title">
-      Cloud Security Intelligence<br />
-      and Remediation Platform
-    </h1>
-    <div class="lede">
-      <p>
-        A multi-cloud platform connecting security findings with resource ownership, operational visibility and automated remediation.
-      </p>
-      <p>
-        The goal was to connect security intelligence with organizational ownership and turn findings into actionable operational workflows.
-      </p>
-    </div>
-  </header>
+  <CaseStudyHero
+    title="Cloud Security Intelligence and Remediation Platform"
+    summary="A multi-cloud platform connecting security findings with resource ownership, operational visibility and automated remediation."
+    role="I architected and built the platform, including the ownership model, dashboards, and incident routing workflows."
+    outcome="Teams gained a consolidated view of findings and their owners, with incidents routed to the responsible teams and recurring findings tracked on existing tickets."
+  />
 
   <figure class="flow">
     <figcaption class="kicker flow-label">How it fits together</figcaption>
